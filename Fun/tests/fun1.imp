@@ -1,0 +1,13 @@
+var test_1;
+var f_0;
+
+function fun_0(param_x,closure) {
+  return((6*param_x));
+}
+
+main {
+  test_1 = malloc((1*4));
+  test_1[0] = &fun_0;
+  f_0 = test_1;
+  print_int((*f_0[0])(7,f_0));
+}

@@ -1,0 +1,21 @@
+var test_1;
+var fact_0;
+
+function fun_0(param_n,closure) {
+  var res_0;
+
+  if ((param_n<=1)) {
+    res_0 = 1;
+  } else {
+    res_0 = (param_n*(**(closure[1]+(0*4)))((param_n-1),closure[1]));
+  }
+  return(res_0);
+}
+
+main {
+  test_1 = malloc((2*4));
+  test_1[0] = &fun_0;
+  test_1[1] = fact_0;
+  fact_0 = test_1;
+  print_int((*fact_0[0])(6,fact_0));
+}

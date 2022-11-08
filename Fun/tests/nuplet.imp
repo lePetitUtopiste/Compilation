@@ -1,0 +1,10 @@
+var test_1;
+var t_0;
+
+main {
+  test_1 = malloc((2*4));
+  test_1[0] = 6;
+  test_1[1] = 1;
+  t_0 = test_1;
+  print_int(((t_0+(0*4))*((t_0+(0*4))+(t_0+(1*4)))));
+}
