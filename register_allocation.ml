@@ -48,9 +48,37 @@ let liveness fdef =
     | Pop _ ->
        out
     | Call(_, n) ->
-       failwith "not implemented"
+       (*les registres callee saved sont considéré comme écrit et ne sont donc plus vivant en sorti*)
+       let out1 = Vset.remove "$a0" out in
+       let out1 = Vset.remove "$a1" out1 in
+       let out1 = Vset.remove "$a2" out1 in
+       let out1 = Vset.remove "$a3" out1 in
+
+       let out1 = Vset.remove "$t2" out1 in
+       let out1 = Vset.remove "$t3" out1 in
+       let out1 = Vset.remove "$t4" out1 in
+       let out1 = Vset.remove "$t5" out1 in
+       let out1 = Vset.remove "$t6" out1 in
+       let out1 = Vset.remove "$t7" out1 in
+       let out1 = Vset.remove "$t8" out1 in
+       let out1 = Vset.remove "$t9" out1 in
+
+       let out1 = Vset.remove "$v0" out1 in
+
+       (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
        VSet.add "v0" out
+
+       let out1 = Vset.add "$s0" out1 in
+       let out1 = Vset.add "$s1" out1 in
+       let out1 = Vset.add "$s2" out1 in
+       let out1 = Vset.add "$s3" out1 in
+       let out1 = Vset.add "$s4" out1 in
+       let out1 = Vset.add "$s5" out1 in
+       let out1 = Vset.add "$s6" out1 in
+       let out1 = Vset.add "$s7" out1 in
+       let out1 = Vset.add "$s8" out1 in
+
     | If(r, s1, s2) ->
        let inS1 = sequence s1 out in
        let inS2 = sequence s2 out in
@@ -93,16 +121,16 @@ let interference_graph fdef =
                  g
     | If(_, s1, s2) ->
       (*TODO*)
-       let out = Hashtbl.find live_out n in
-       failwith "not implemented"
+      let g1 = seq s1 g in
+      seq s2 g1
     | While(s1, _, s2) ->
-       failwith "not implemented"
+       seq s2 (seq s1 g)
     | Move(rd, rs) ->
-       failwith "not implemented"
+       g (*pour l'instant on ne gère pas les lien de préférence*)
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
-       failwith "not implemented"
+       g (*certain que c'est faut TODO corriger ce truc*)
     | Call(_, _) ->
-       failwith "not implemented"
+       g (*TODO pareil*)
   in
   seq fdef.code g
 
