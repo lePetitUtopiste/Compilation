@@ -130,7 +130,10 @@ let interference_graph fdef =
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
        g (*certain que c'est faut TODO corriger ce truc*)
     | Call(_, _) ->
-       g (*TODO pareil*)
+    let out = Hashtbl.find live_out n in
+    VSet.fold (fun r g' -> if r <> "$v0" then
+                             Graph.add_edge r "$v0" Conflict g'
+                           else g')
   in
   seq fdef.code g
 
