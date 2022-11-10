@@ -65,12 +65,12 @@ let tr_fdef fdef =
        (*si la variable est une variable locale ou un paramètre, on la stocke dans un registre virtuel
          si la variable est supposé aller sur la pile on ne fait rien et on renvoie NOP*)
 
-       (*if Mimp.program.mem x then
+       if List.mem x Mimp.(fdef.locals)  then
         x , Nop
-       else*)
-
+       else
         let r = new_vreg() in
         r, Nop ++ Read(r,x)
+
     | Mimp.Unop(op, e) ->
        let r1, s1 = tr_expr e in
        let r = new_vreg() in
@@ -83,13 +83,14 @@ let tr_fdef fdef =
     | Mimp.Call(f, args) ->
        (* Il faut réaliser ici la convention d'appel : passer les arguments
           de la bonne manière, et renvoyer le résultat dans $v0. *)
+
       let rec parcours_args args =
         match args with
-        |e::suite -> let r,s = tr_expr e in parcours_args suite ++ Push(r)
+        |e::suite -> let r,s = tr_expr e in Push(r) ++ parcours_args suite 
         | _ -> Nop
       in
       let s = parcours_args args in
-      "v0",  s ++ Call(f,List.length args)
+      "$v0",  s ++ Call(f,List.length args)
   in
 
   let rec tr_instr = function
@@ -105,10 +106,11 @@ let tr_fdef fdef =
     | Mimp.While(e, s) ->
        let r_test, s_test = tr_expr e in
        s_test ++ While(s_test, r_test, tr_seq s)
+       
     | Mimp.Return e ->
        (* Le résultat renvoyé doit être placé dans $v0. *)
        let r,s = tr_expr e in
-       s ++ Move(r,"v0") ++ Return
+       s ++ Move("$v0",r) ++ Return
 
     | Mimp.Expr e ->
        let r, s = tr_expr e in
@@ -121,7 +123,7 @@ let tr_fdef fdef =
   let code =
     (* À ce code, il faut ajouter la sauvegarde et la restauration
        des registres virtuels callee_saved. *)
-    tr_seq Mimp.(fdef.code)
+   (Nop ++ aimp.Push("$s0") ++ aimp.Push("$s1") ++ aimp.Push("$s2") ++ aimp.Push("$s3") ++ aimp.Push("$s4") ++ aimp.Push("$s5") ++ aimp.Push("$s6") ++ aimp.Push("$s7") ++ aimp.Push("$s8")) @@ tr_seq Mimp.(fdef.code) @@ (Nop ++ Pop(4))
   in
   {
     name = Mimp.(fdef.name);
