@@ -67,7 +67,7 @@ let liveness fdef =
 
        (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
-       VSet.add "v0" out
+       VSet.add "v0" out       
 
        let out1 = Vset.add "$s0" out1 in
        let out1 = Vset.add "$s1" out1 in
@@ -106,10 +106,12 @@ let v0 = "$v0"
 let interference_graph fdef =
   let live_out = liveness fdef in
   let g = List.fold_left (fun g x -> Graph.add_vertex x g) Graph.empty fdef.locals in
+  (*fonction de parcours des séquences*)
   let rec seq s g = match s with
     | Nop -> g
     | Instr(n, i) -> instr n i g
     | Seq(s1, s2) -> seq s1 (seq s2 g)
+   (*fonction de parcours des *)
   and instr n i g = match i with
     | Read(rd, _) | Cst(rd, _) | Unop(rd, _, _) | Binop(rd, _, _, _) ->
        (*ajouter à g une arrête entre rd et chaque registre virtuel vivant en sortie*)
@@ -126,7 +128,13 @@ let interference_graph fdef =
     | While(s1, _, s2) ->
        seq s2 (seq s1 g)
     | Move(rd, rs) ->
-       g (*pour l'instant on ne gère pas les lien de préférence*)
+        (*pour l'instant on ne gère pas les lien de préférence*)
+       let g1 =  VSet.fold (fun r g' -> if (r <> rd && r <> rs) then
+         Graph.add_edge r rd Conflict g'
+       else g')
+       out 
+       g
+      in
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
        g (*certain que c'est faut TODO corriger ce truc*)
     | Call(_, _) ->

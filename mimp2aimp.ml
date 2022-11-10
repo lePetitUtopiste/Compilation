@@ -123,7 +123,7 @@ let tr_fdef fdef =
   let code =
     (* À ce code, il faut ajouter la sauvegarde et la restauration
        des registres virtuels callee_saved. *)
-   (Nop ++ aimp.Push("$a0") ++ aimp.Push("$a1") ++ aimp.Push("$a2") ++ aimp.Push("$a3")) @@ tr_seq Mimp.(fdef.code) @@ (Nop ++ Pop(4))
+   (Nop ++ aimp.Push("$s0") ++ aimp.Push("$s1") ++ aimp.Push("$s2") ++ aimp.Push("$s3") ++ aimp.Push("$s4") ++ aimp.Push("$s5") ++ aimp.Push("$s6") ++ aimp.Push("$s7") ++ aimp.Push("$s8")) @@ tr_seq Mimp.(fdef.code) @@ (Nop ++ Pop(4))
   in
   {
     name = Mimp.(fdef.name);
