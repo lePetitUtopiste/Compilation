@@ -49,35 +49,34 @@ let liveness fdef =
        out
     | Call(_, n) ->
        (*les registres callee saved sont considéré comme écrit et ne sont donc plus vivant en sorti*)
-       let out1 = Vset.remove "$a0" out in
-       let out1 = Vset.remove "$a1" out1 in
-       let out1 = Vset.remove "$a2" out1 in
-       let out1 = Vset.remove "$a3" out1 in
+       let out1 = VSet.remove "$a0" out in
+       let out1 = VSet.remove "$a1" out1 in
+       let out1 = VSet.remove "$a2" out1 in
+       let out1 = VSet.remove "$a3" out1 in
 
-       let out1 = Vset.remove "$t2" out1 in
-       let out1 = Vset.remove "$t3" out1 in
-       let out1 = Vset.remove "$t4" out1 in
-       let out1 = Vset.remove "$t5" out1 in
-       let out1 = Vset.remove "$t6" out1 in
-       let out1 = Vset.remove "$t7" out1 in
-       let out1 = Vset.remove "$t8" out1 in
-       let out1 = Vset.remove "$t9" out1 in
+       let out1 = VSet.remove "$t2" out1 in
+       let out1 = VSet.remove "$t3" out1 in
+       let out1 = VSet.remove "$t4" out1 in
+       let out1 = VSet.remove "$t5" out1 in
+       let out1 = VSet.remove "$t6" out1 in
+       let out1 = VSet.remove "$t7" out1 in
+       let out1 = VSet.remove "$t8" out1 in
+       let out1 = VSet.remove "$t9" out1 in
 
-       let out1 = Vset.remove "$v0" out1 in
+       VSet.remove "$v0" out1
 
        (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
-       VSet.add "v0" out
-
-       let out1 = Vset.add "$s0" out1 in
-       let out1 = Vset.add "$s1" out1 in
-       let out1 = Vset.add "$s2" out1 in
-       let out1 = Vset.add "$s3" out1 in
-       let out1 = Vset.add "$s4" out1 in
-       let out1 = Vset.add "$s5" out1 in
-       let out1 = Vset.add "$s6" out1 in
-       let out1 = Vset.add "$s7" out1 in
-       let out1 = Vset.add "$s8" out1 in
+       let out1 = VSet.add "v0" out in
+       let out1 = VSet.add "$s0" out1 in
+       let out1 = VSet.add "$s1" out1 in
+       let out1 = VSet.add "$s2" out1 in
+       let out1 = VSet.add "$s3" out1 in
+       let out1 = VSet.add "$s4" out1 in
+       let out1 = VSet.add "$s5" out1 in
+       let out1 = VSet.add "$s6" out1 in
+       let out1 = VSet.add "$s7" out1 in
+       VSet.add "$s8" out1
 
     | If(r, s1, s2) ->
        let inS1 = sequence s1 out in
@@ -134,6 +133,8 @@ let interference_graph fdef =
     VSet.fold (fun r g' -> if r <> "$v0" then
                              Graph.add_edge r "$v0" Conflict g'
                            else g')
+                 out
+                 g
   in
   seq fdef.code g
 
