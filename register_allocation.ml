@@ -128,7 +128,7 @@ let interference_graph fdef =
     | While(s1, _, s2) ->
        seq s2 (seq s1 g)
     | Move(rd, rs) ->
-        (*pour l'instant on ne gère pas les lien de préférence*)
+        (*pour l'instant on ne gère pas les liens de préférences*)
        let g1 =  VSet.fold (fun r g' -> if (r <> rd && r <> rs) then
          Graph.add_edge r rd Conflict g'
        else g')
@@ -136,7 +136,7 @@ let interference_graph fdef =
        g
       in
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
-       g (*certain que c'est faut TODO corriger ce truc*)
+       g (*certain que c'est faux TODO corriger ce truc*)
     | Call(_, _) ->
     let out = Hashtbl.find live_out n in
     VSet.fold (fun r g' -> if r <> "$v0" then
