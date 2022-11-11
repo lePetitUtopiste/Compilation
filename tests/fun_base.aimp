@@ -1,0 +1,29 @@
+var test;
+
+function main(arg) {
+  var #3;
+  var #2;
+  var #1;
+  var #0;
+  var test_local;
+
+  push $s0; {1}
+  push $s1; {2}
+  push $s2; {3}
+  push $s3; {4}
+  push $s4; {5}
+  push $s5; {6}
+  push $s6; {7}
+  push $s7; {8}
+  push $s8; {9}
+  #3 <- 1; {17}
+  *test <- #3; {18}
+  #1 <- *test; {14}
+  #2 <- #1(+1); {15}
+  *test_local <- #2; {16}
+  putchar test_local; {13}
+  #0 <- *test; {11}
+  putchar #0; {12}
+  pop 4; {10}
+}
+

@@ -25,9 +25,14 @@ let tr_fdef fdef =
     | Binop(rd, Lt, r1, r2)  -> failwith "not implemented"
     | Call(f)            -> failwith "not implemented"
     | If(r, s1, s2) ->
-       failwith "not implemented"
+       let then_label = new_label() in
+       let end_label = new_label() in
+       bnez r then_label @@ tr_seq s2 @@ b end_label @@ label then_label @@ tr_seq s1 @@ label end_label
+
     | While(s1, r, s2) ->
-       failwith "not implemented"
+       let test_label = new_label() in
+       let code_label = new_label() in
+       
     | Return -> failwith "not implemented"
 
   and tr_seq (s: Eimp.sequence) = match s with
@@ -90,6 +95,5 @@ let tr_prog prog =
     (fun id code -> label id @@ dword [0] @@ code)
     prog.globals nop
   in
-  
+
   { text; data }
-  

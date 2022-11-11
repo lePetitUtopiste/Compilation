@@ -40,15 +40,15 @@ let tr_fdef fdef =
        load1 vr
        @@ Instr(Putchar(op1 vr))
     | Aimp.Read(vrd, x) ->
-       failwith "not implemented"
+        Instr(Read(dst vrd,Global(x))) @@ save vrd
     | Aimp.Write(x, vr) ->
-       failwith "not implemented"
+       load1 vr @@ Instr(Write(Global(x),op1 vr))
     | Aimp.Move(vrd, vr) ->
-       failwith "not implemented"
+        load2 vr @@ Instr(Move(dst vrd,op2 vrd)) @@ save vrd
     | Aimp.Push vr ->
-       failwith "not implemented"
+       load1 vr @@ Instr(Push(op1 vr))
     | Aimp.Pop n ->
-       failwith "not implemented"
+       Instr(Pop(n))
     | Aimp.Cst(vrd, n) ->
        Instr(Cst(dst vrd, n))
        @@ save vrd
@@ -57,15 +57,16 @@ let tr_fdef fdef =
        @@ Instr(Unop(dst vrd, tr_unop op, op1 vr))
        @@ save vrd
     | Aimp.Binop(vrd, op, vr1, vr2) ->
-       failwith "not implemented"
+       load1 vr1 @@ load2 vr2 @@ Instr(Binop(dst vrd, tr_binop op, op1 vr1, op2 vr2))@@ save vrd
     | Aimp.Call(f, n) ->
-       failwith "not implemented"
+       Instr(Call(f)) (*TODO gérer les paramètres*)
     | Aimp.If(vr, s1, s2) ->
-       failwith "not implemented"
+       load1 vr @@ Instr(If(dst vr, tr_seq s1, tr_seq s2))
     | Aimp.While(s1, vr, s2) ->
-       failwith "not implemented"
+       let s1_trad = tr_seq s1 in
+       load1 vr @@ Instr(While(s1_trad, op1 vr, tr_seq s2))
     | Aimp.Return ->
-       failwith "not implemented"
+       Instr(Return)
 
   and tr_seq = function
     | Aimp.Seq(s1, s2) -> Seq(tr_seq s1, tr_seq s2)

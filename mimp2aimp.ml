@@ -86,7 +86,7 @@ let tr_fdef fdef =
 
       let rec parcours_args args =
         match args with
-        |e::suite -> let r,s = tr_expr e in Push(r) ++ parcours_args suite 
+        |e::suite -> let r,s = tr_expr e in parcours_args suite ++ Push(r)
         | _ -> Nop
       in
       let s = parcours_args args in
@@ -106,7 +106,7 @@ let tr_fdef fdef =
     | Mimp.While(e, s) ->
        let r_test, s_test = tr_expr e in
        s_test ++ While(s_test, r_test, tr_seq s)
-       
+
     | Mimp.Return e ->
        (* Le résultat renvoyé doit être placé dans $v0. *)
        let r,s = tr_expr e in
@@ -123,7 +123,10 @@ let tr_fdef fdef =
   let code =
     (* À ce code, il faut ajouter la sauvegarde et la restauration
        des registres virtuels callee_saved. *)
-   (Nop ++ aimp.Push("$s0") ++ aimp.Push("$s1") ++ aimp.Push("$s2") ++ aimp.Push("$s3") ++ aimp.Push("$s4") ++ aimp.Push("$s5") ++ aimp.Push("$s6") ++ aimp.Push("$s7") ++ aimp.Push("$s8")) @@ tr_seq Mimp.(fdef.code) @@ (Nop ++ Pop(4))
+  let s1 = Nop ++ Aimp.Push("$s0") ++ Aimp.Push("$s1") ++ Aimp.Push("$s2") ++ Aimp.Push("$s3") ++ Aimp.Push("$s4") in
+  let s1 = s1 ++ Aimp.Push("$s5") ++ Aimp.Push("$s6") ++ Aimp.Push("$s7") ++ Aimp.Push("$s8") in
+  let s2 = Nop ++ Pop(4) in
+  s1 @@ tr_seq Mimp.(fdef.code) @@ s2
   in
   {
     name = Mimp.(fdef.name);

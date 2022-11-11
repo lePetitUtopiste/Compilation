@@ -137,7 +137,7 @@ let pp_program prog out_channel =
          print "%s <- %i;" vrd n
       | Unop(vrd, Addi n, vr) ->
          print "%s <- %s(+%i);" vrd vr n
-      | Binop(vrd, op, vr1, vr2) -> 
+      | Binop(vrd, op, vr1, vr2) ->
          print "%s <- %s %s %s;" vrd vr1 (pp_binop op) vr2
       | Call(f, n) ->
          print "call %s (%i);" f n
@@ -164,7 +164,7 @@ let pp_program prog out_channel =
     and pp_seq = function
       | Nop -> ()
       | Seq(s1, s2) -> pp_seq s1; pp_seq s2
-      | Instr(n, i) -> 
+      | Instr(n, i) ->
          print_margin(); pp_instr i;
          print " {%i}\n" n
     in
@@ -176,7 +176,6 @@ let pp_program prog out_channel =
     decr margin;
     print "}\n\n"
   in
-  
+
   pp_vars prog.globals;
   List.iter pp_function prog.functions;
-  

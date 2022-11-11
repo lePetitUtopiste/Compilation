@@ -128,12 +128,12 @@ let interference_graph fdef =
        seq s2 (seq s1 g)
     | Move(rd, rs) ->
         (*pour l'instant on ne gère pas les liens de préférences*)
-       let g1 =  VSet.fold (fun r g' -> if (r <> rd && r <> rs) then
-         Graph.add_edge r rd Conflict g'
-       else g')
-       out
-       g
-      in
+        let out = Hashtbl.find live_out n in
+        VSet.fold (fun r g' -> if r <> rd && r <> rs  then
+                                 Graph.add_edge r rd Conflict g'
+                               else g')
+                 out
+                 g
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
        g (*certain que c'est faux TODO corriger ce truc*)
     | Call(_, _) ->
@@ -147,13 +147,13 @@ let interference_graph fdef =
   seq fdef.code g
 
 
-type color = int VMap.t
+type color = int.t
 
 
 (* Renvoie la plus petit couleur non utilisée par l'ensemble [v]. *)
 let choose_color v colors =
-  failwith "not implemented"
-
+  let val_max = VSet.fold (fun elt cpt_max -> if colors[elt] <= cpt_max then cpt_max else colors[elt]) v 0 in
+  val_max + 1
 let color g k =
 
   let george x y g =
@@ -182,5 +182,18 @@ let print_colors c =
   Printf.(printf "Coloration : \n";
           VMap.iter (printf "  %s: %i\n") c)
 
+(**
+   4/ Conclusion
+   Les couleurs sont des numéros. Les numéros de 0 à K-1 sont associés
+   aux K registres physiques utilisés, et les numéros suivants à des
+   emplacements dans la pile.
+ *)
+
 let allocation (fdef: function_def): register Graph.VMap.t * int =
+  (* Calculer les vivacités, en déduire un graphe d'interférence,
+     le colorier, puis en déduire :
+     - une affectation concrète de chaque sommet à un registre réel
+       ou un emplacement de pile,
+     - le nombre d'emplacements de pile utilisés.
+   *)
   failwith "not implemented"
