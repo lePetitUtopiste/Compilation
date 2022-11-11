@@ -11,19 +11,19 @@ let tr_fdef fdef =
 
   let rec tr_instr = function
     | Putchar r          -> move a0 r @@ li v0 11 @@ syscall
-    | Read(rd, Global x) -> failwith "not implemented"
-    | Read(rd, Stack i)  -> failwith "not implemented"
-    | Write(Global x, r) -> failwith "not implemented"
-    | Write(Stack i, r)  -> failwith "not implemented"
-    | Move(rd, r)        -> failwith "not implemented"
+    | Read(rd, Global x) -> la rd x @@ sw rd 0(rd)
+    | Read(rd, Stack i)  -> lw rd (-i) fp
+    | Write(Global x, r) -> failwith "failed with not implemented"
+    | Write(Stack i, r)  -> sw r (-i) fp
+    | Move(rd, r)        -> move rd r
     | Push r             -> sw r 0 sp @@ subi sp sp 4
     | Pop n              -> addi sp sp (4*n)
     | Cst(rd, n)         -> li rd n
     | Unop(rd, Addi n, r)    -> addi rd r n
-    | Binop(rd, Add, r1, r2) -> failwith "not implemented"
-    | Binop(rd, Mul, r1, r2) -> failwith "not implemented"
-    | Binop(rd, Lt, r1, r2)  -> failwith "not implemented"
-    | Call(f)            -> failwith "not implemented"
+    | Binop(rd, Add, r1, r2) -> add rd r1 r2
+    | Binop(rd, Mul, r1, r2) -> mul rd r1 r2
+    | Binop(rd, Lt, r1, r2)  -> slt rd r1 r2
+    | Call(f)            -> b f
     | If(r, s1, s2) ->
        let then_label = new_label() in
        let end_label = new_label() in
@@ -32,8 +32,19 @@ let tr_fdef fdef =
     | While(s1, r, s2) ->
        let test_label = new_label() in
        let code_label = new_label() in
-       
-    | Return -> failwith "not implemented"
+        b test_label
+        @@ label code_label
+        @@ tr_seq s2
+        @@ label test_label
+        @@ tr_seq s1
+        @@ bnez t0 code_label
+
+    | Return ->
+      b return_label
+      (*move sp fp
+      @@ lw ra (-4) fp
+      @@ lw fp 0 fp
+      @@ jr ra*)
 
   and tr_seq (s: Eimp.sequence) = match s with
     | Nop         -> nop
@@ -42,7 +53,19 @@ let tr_fdef fdef =
   in
 
   (* code de la fonction *)
-  failwith "not implemented"
+  sw fp 0 sp  (*sauvegarde de fp a la place pointé par sp*)
+  @@ subi sp sp 4 (*on déplace sp à la case supérieur *)
+  @@ sw ra 0 sp (*sauvegarde de l'adresse de retour*)
+  @@ subi sp sp 4 (*déplacement de la case*)
+  @@ addi fp sp 8 (*on décale le début du pointeur de fonction au dessus de ces deux valeurs*)
+  @@ addi sp sp (-4 * fdef.locals) (*on place sp à la fin de la liste des variables locales*)
+  @@ tr_seq (fdef.code) (*on ajoute le code la fonction*)
+  (*code du return*)
+  @@ label return_label
+  @@ li t0 0  (*on remet t0 à 0*)
+  @@ move sp fp (*on désalloue la pile*)
+  @@ lw ra (-4) fp (*on remet le ra précédent dans ra *)
+  @@ jr ra (*on retourne au bout de  code de la fonction précédente*)
 
 
 let tr_prog prog =

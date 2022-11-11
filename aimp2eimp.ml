@@ -59,7 +59,7 @@ let tr_fdef fdef =
     | Aimp.Binop(vrd, op, vr1, vr2) ->
        load1 vr1 @@ load2 vr2 @@ Instr(Binop(dst vrd, tr_binop op, op1 vr1, op2 vr2))@@ save vrd
     | Aimp.Call(f, n) ->
-       Instr(Call(f)) (*TODO gérer les paramètres*)
+       Instr(Call(f)) 
     | Aimp.If(vr, s1, s2) ->
        load1 vr @@ Instr(If(dst vr, tr_seq s1, tr_seq s2))
     | Aimp.While(s1, vr, s2) ->

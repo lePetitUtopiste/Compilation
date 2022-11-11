@@ -86,7 +86,9 @@ let tr_fdef fdef =
 
       let rec parcours_args args =
         match args with
-        |e::suite -> let r,s = tr_expr e in parcours_args suite ++ Push(r)
+        (*plein de NOP pour transformer le tout en séquence et pour conserver l'ordre des paramètres
+        normalement tous ces nop disparaitront ensuite*)
+        |e::suite -> let r,s = tr_expr e in (Nop ++ Push(r)) @@ (parcours_args suite) 
         | _ -> Nop
       in
       let s = parcours_args args in
