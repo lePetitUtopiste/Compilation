@@ -67,7 +67,7 @@ let liveness fdef =
 
        (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
-       let out1 = VSet.add "v0" out in
+       let out1 = VSet.add "$v0" out in
        let out1 = VSet.add "$s0" out1 in
        let out1 = VSet.add "$s1" out1 in
        let out1 = VSet.add "$s2" out1 in
@@ -278,11 +278,11 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
       | _ -> -1
    in
    let decide_placement nom  =
-    if (String.get nom 1) == '$'then begin (Printf.printf "et un registre %s\n" nom); Actual(nom) end
+    if (String.get nom 0) == '$'then begin (Printf.printf "et un registre %s\n" nom); Actual(nom) end
     else
         begin
-        Printf.printf "et une variable sur le tas du nom de %s\n" nom;
         cpt := !cpt + 1;
+        Printf.printf "et une variable sur le tas du nom de %s\n c'est la %i\n" nom !cpt;
         if List.mem nom fdef.locals then Stacked (-4*(find_index nom fdef.locals 0 ))
         else
           if List.mem nom fdef.params then Stacked (4*(find_index nom fdef.params 0 ))
@@ -295,4 +295,13 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
     | (nom,data)::tl -> VMap.add nom (decide_placement nom ) (iterate_keys tl)
     | _ ->  VMap.empty
    in
-   (iterate_keys (VMap.bindings graph) ,!cpt)
+   let map_alloc = iterate_keys (VMap.bindings graph) in
+
+   let print_reg reg =
+    match reg with
+    | Actual(r) -> Printf.printf "reg %s\n" r
+    | Stacked(i) -> Printf.printf "stack pos %i\n" i
+    in
+
+   VMap.iter (fun key data -> (Printf.printf "%s -> " key); print_reg data ) map_alloc;
+   (map_alloc, !cpt)

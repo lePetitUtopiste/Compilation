@@ -1,0 +1,29 @@
+function main {
+1 params
+5 locals
+  push $s0;
+  push $s1;
+  push $s2;
+  push $s3;
+  push $s4;
+  push $s5;
+  push $s6;
+  push $s7;
+  push $s8;
+  $t0 <- 1;
+  *{-2} <- $t0;
+  $t0 <- *{-2};
+  *test <- $t0;
+  $t0 <- *{14};
+  $t0 <- $t0(+1);
+  *{2} <- $t0;
+  $t0 <- *{2};
+  *test_local <- $t0;
+  $t0 <- 0;
+  *{6} <- $t0;
+  $t1 <- *{6};
+  $v0 <- $v0;
+  return;
+  pop 9;
+}
+

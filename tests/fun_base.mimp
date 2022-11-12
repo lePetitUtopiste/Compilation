@@ -1,11 +1,9 @@
-var test;
-
 function main(arg) {
   var test_local;
+  var test;
 
   test = 1;
   test_local = (test(+1));
-  putchar(test_local);
-  putchar(test);
+  return(0);
 }
 

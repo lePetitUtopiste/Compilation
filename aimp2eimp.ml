@@ -14,18 +14,19 @@ let op2_reg = "$t1"
 
 let tr_fdef fdef =
   let alloc, mx = allocation fdef in
+  Printf.printf "fin allocation pour la fonction %s\n" fdef.name;
 
-  let save vr = match Graph.VMap.find vr alloc with
+  let save vr = (Printf.printf "save %s\n" vr); match Graph.VMap.find vr alloc with
     | Actual r  -> Nop
     | Stacked i -> Instr(Write(Stack(-i-2), dst_reg))
   in
-  let load op vr = match Graph.VMap.find vr alloc with
+  let load op vr = (Printf.printf "load %s\n" vr);match Graph.VMap.find vr alloc with
     | Actual r  -> Nop
     | Stacked i -> Instr(Read(op, Stack(-i-2)))
   in
   let load1 = load op1_reg in
   let load2 = load op2_reg in
-  let reg op vr = match Graph.VMap.find vr alloc with
+  let reg op vr = (Printf.printf "reg s%s\n" vr); match Graph.VMap.find vr alloc with
     | Actual r  -> r
     | Stacked i -> op
   in
@@ -40,8 +41,11 @@ let tr_fdef fdef =
        load1 vr
        @@ Instr(Putchar(op1 vr))
     | Aimp.Read(vrd, x) ->
+        (*plusieurs cas si x est une variable globale ou pas*)
+        
         Instr(Read(dst vrd,Global(x))) @@ save vrd
     | Aimp.Write(x, vr) ->
+      if
        load1 vr @@ Instr(Write(Global(x),op1 vr))
     | Aimp.Move(vrd, vr) ->
         load2 vr @@ Instr(Move(dst vrd,op2 vrd)) @@ save vrd
@@ -59,7 +63,7 @@ let tr_fdef fdef =
     | Aimp.Binop(vrd, op, vr1, vr2) ->
        load1 vr1 @@ load2 vr2 @@ Instr(Binop(dst vrd, tr_binop op, op1 vr1, op2 vr2))@@ save vrd
     | Aimp.Call(f, n) ->
-       Instr(Call(f)) 
+       Instr(Call(f))
     | Aimp.If(vr, s1, s2) ->
        load1 vr @@ Instr(If(dst vr, tr_seq s1, tr_seq s2))
     | Aimp.While(s1, vr, s2) ->

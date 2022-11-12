@@ -1,6 +1,8 @@
 open Eimp
 open Mips
 
+
+
 let new_label =
   let count = ref 0 in
   fun () -> incr count; Printf.sprintf "__lab_%i" !count
@@ -13,7 +15,7 @@ let tr_fdef fdef =
     | Putchar r          -> move a0 r @@ li v0 11 @@ syscall
     | Read(rd, Global x) -> la rd x @@ sw rd 0(rd)
     | Read(rd, Stack i)  -> lw rd (-i) fp
-    | Write(Global x, r) -> failwith "failed with not implemented"
+    | Write(Global x, r) -> (Printf.printf"impossible d'acceder à %s" x); failwith "failed with not implemented"
     | Write(Stack i, r)  -> sw r (-i) fp
     | Move(rd, r)        -> move rd r
     | Push r             -> sw r 0 sp @@ subi sp sp 4

@@ -130,7 +130,7 @@ let pp_program prog out_channel =
       | Read(vrd, x) ->
          print "%s <- *%s;" vrd x
       | Write(x, vr) ->
-         print "*%s <- %s;" x vr
+         print "Write(*%s <- %s);" x vr
       | Move(vrd, vr) ->
          print "%s <- %s;" vrd vr
       | Cst(vrd, n) ->
