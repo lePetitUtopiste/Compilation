@@ -37,8 +37,8 @@ function main(arg) {
     #2 <- i < #1; {13}
     #2
   ) {
-    push #5; {19}
     push i; {20}
+    push #5; {19}
     call ligne (2); {21}
     #4 <- *retour; {16}
     putchar #4; {17}

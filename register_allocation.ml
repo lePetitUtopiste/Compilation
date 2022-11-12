@@ -121,7 +121,6 @@ let interference_graph fdef =
                  out
                  g
     | If(_, s1, s2) ->
-      (*TODO*)
       let g1 = seq s1 g in
       seq s2 g1
     | While(s1, _, s2) ->
@@ -147,7 +146,7 @@ let interference_graph fdef =
   seq fdef.code g
 
 
-type color = int.t
+type color = int VMap.t
 
 
 (* Renvoie la plus petit couleur non utilisée par l'ensemble [v]. *)
@@ -157,23 +156,95 @@ let choose_color v colors =
 let color g k =
 
   let george x y g =
-    failwith "not implemented"
+    if String.get x 0 == '$' then
+      false
+    else
+      let voisins_x = VSet.filter (fun x -> (Graph.degree x g < k)) (Graph.neighbours x Conflict g) in
+      let voisins_y = Graph.neighbours y Conflict g in
+      let inter = VSet.inter voisins_x voisins_y in
+      false
+
   in
 
+  (** Recherche d'un sommet à colorier.
+      On cherche un sommet [x] de degré < K, et qui n'a pas d'arêtes de
+      préférence. Si on en trouve un on appelle [select x g], et sinon
+      on passe à [coalesce].
+
+      Heuristique : parmi les sommets sélectionnables, prendre un sommet
+      de faible degré.
+   *)
   let rec simplify g =
+    (*let seq = VMap.to_seq g in
+    let rec find_min seq max =
+      match seq with
+      | (key,_)::suite  -> if (Graph.degree key g) < max then key else find_min suite max
+      | _ -> ""
+    in
+
+    let x = find_min seq 32 in
+    if x == "" then coalesce g else select x g
+    *)
     failwith "not implemented"
+
+(** Recherche de deux sommets à fusionner.
+  Parmi les sommets liés par des arêtes de préférence, on en cherche
+  deux qui satisfont le critère de George. Si on trouve une telle
+  paire (x, y), on colorie avec [simplify] le graphe [g'] obtenu en
+  fusionnant [x] avec [y], puis on propage à [x] la couleur qui a
+  été affectée à [y]. Dans le cas contraire, on passe à [freeze]
+**)
 
   and coalesce g =
     failwith "not implemented"
 
+(** Abandon d'arêtes de préférence.
+    On cherche un sommet de degré < K. S'il existe un tel sommet [x],
+    celui-ci a nécessairement des arêtes de préférence. On les retire
+    et on revient à [simplify]. Sinon, on passe à [spill].
+ *)
   and freeze g =
     failwith "not implemented"
 
+(** Sacrifice d'un sommet.
+    On se résigne à ne (peut-être) pas pouvoir donner à l'un des sommets
+    une couleur < K. On choisit un sommet [x] et on appelle [select x g].
+    Note : le fait qu'un sommet [x] ait un degré >= K signifie qu'il n'est
+    pas certain qu'il puisse recevoir une couleur < K après que ses voisins
+    auront été coloriés. Mais avec un peu de chance cela fonctionnera
+    quand même !
+
+    Exception : on peut également arriver ici dans le cas où tous les
+    sommets restants sont déjà coloriés (car il ne reste que des sommets
+    correspondant à des registres réels). Dans ce cas on a atteint le cas
+    de base de notre récursion.
+
+    Heuristiques :
+    - favoriser un sommet correspondant à un registre peu utilisé, pour
+      limiter le nombre d'accès à la mémoire dans l'hypothèse où le sommet
+      sacrifié serait effectivement associé à un emplacement de pile
+      (note : ce critère demande d'avoir collecté des infos sur la
+      fréquence d'utilisation estimée des différents registres),
+    - favoriser des sommets de fort degré, dont la suppression va donc
+      supprimer de nombreuses arêtes et faciliter le coloriage des autres
+      registres.
+ *)
   and spill g =
     failwith "not implemented"
 
+
+(** Mettre de côté un sommet [x] et colorier récursivement le graphe [g']
+     ainsi obtenu. À la fin, on choisit une couleur pour [x] compatible
+     avec les couleurs sélectionnées pour ses voisins.
+  *)
   and select x g =
+    (*
+    let c = simplify (Graph.remove_vertex x g)  in
+    let voisin = Graph.neighbours x Conflict g in
+    VMap.add x (choose_color voisin c) c
+    *)
     failwith "not implemented"
+
 
   in
   simplify g
@@ -196,4 +267,32 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
        ou un emplacement de pile,
      - le nombre d'emplacements de pile utilisés.
    *)
-  failwith "not implemented"
+   Printf.printf "debut exécution de l'allocation\n";
+   let graph = interference_graph fdef in
+   Graph.print_graph graph;
+
+   let cpt = ref 0  in
+   let rec find_index elt l cpt =
+      match l with
+      | hd::tl -> if elt == hd then cpt else find_index elt tl cpt+1
+      | _ -> -1
+   in
+   let decide_placement nom  =
+    if (String.get nom 1) == '$'then begin (Printf.printf "et un registre %s\n" nom); Actual(nom) end
+    else
+        begin
+        Printf.printf "et une variable sur le tas du nom de %s\n" nom;
+        cpt := !cpt + 1;
+        if List.mem nom fdef.locals then Stacked (-4*(find_index nom fdef.locals 0 ))
+        else
+          if List.mem nom fdef.params then Stacked (4*(find_index nom fdef.params 0 ))
+          else failwith "oups les variables globales apparaissent dans le graphe"
+        end
+   in
+   let rec iterate_keys bind  =
+    let result_map :register Graph.VMap.t = VMap.empty in
+    match bind with
+    | (nom,data)::tl -> VMap.add nom (decide_placement nom ) (iterate_keys tl)
+    | _ ->  VMap.empty
+   in
+   (iterate_keys (VMap.bindings graph) ,!cpt)
