@@ -13,33 +13,65 @@ main:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -20
+	addi $sp, $sp, -16
+	sw $s0, 0($sp)
+	subi $sp, $sp, 4
+	sw $s1, 0($sp)
+	subi $sp, $sp, 4
+	sw $s2, 0($sp)
+	subi $sp, $sp, 4
+	sw $s3, 0($sp)
+	subi $sp, $sp, 4
+	sw $s4, 0($sp)
+	subi $sp, $sp, 4
+	sw $s5, 0($sp)
+	subi $sp, $sp, 4
+	sw $s6, 0($sp)
+	subi $sp, $sp, 4
+	sw $s7, 0($sp)
+	subi $sp, $sp, 4
 	li $t0, 44
 	sw $t0, -8($fp)
-	lw $t0, -8($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
+	lw $t1, -8($fp)
+	move $a3, $t1
 	li $t0, 43
 	sw $t0, -12($fp)
-	lw $t0, -12($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
+	lw $t1, -12($fp)
+	move $a2, $t1
 	li $t0, 42
 	sw $t0, -16($fp)
-	lw $t0, -16($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
+	lw $t1, -16($fp)
+	move $a1, $t1
+	move $s7, $a0
+	move $s6, $a1
+	move $s5, $a2
+	move $s4, $a3
 	jal ordre
-	addi $sp, $sp, 12
+	addi $sp, $sp, 0
 	li $t0, 0
 	sw $t0, -20($fp)
 	lw $t1, -20($fp)
 	move $v0, $t1
 	move $sp, $fp
-	lw $ra, -4($fp)
-	lw $fp, 0($fp)
-	jr $ra
+	b __lab_2
 	li $v0, 0
+__lab_2:
+	addi $sp, $sp, 4
+	lw $s7, 0($sp)
+	addi $sp, $sp, 4
+	lw $s6, 0($sp)
+	addi $sp, $sp, 4
+	lw $s5, 0($sp)
+	addi $sp, $sp, 4
+	lw $s4, 0($sp)
+	addi $sp, $sp, 4
+	lw $s3, 0($sp)
+	addi $sp, $sp, 4
+	lw $s2, 0($sp)
+	addi $sp, $sp, 4
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
 	move $sp, $fp
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)
@@ -50,20 +82,36 @@ ordre:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -28
-	lw $t0, 4($fp)
+	addi $sp, $sp, -16
+	sw $s0, 0($sp)
+	subi $sp, $sp, 4
+	sw $s1, 0($sp)
+	subi $sp, $sp, 4
+	sw $s2, 0($sp)
+	subi $sp, $sp, 4
+	sw $s3, 0($sp)
+	subi $sp, $sp, 4
+	sw $s4, 0($sp)
+	subi $sp, $sp, 4
+	sw $s5, 0($sp)
+	subi $sp, $sp, 4
+	sw $s6, 0($sp)
+	subi $sp, $sp, 4
+	sw $s7, 0($sp)
+	subi $sp, $sp, 4
+	move $t0, $a1
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
 	move $a0, $t0
 	li $v0, 11
 	syscall
-	lw $t0, 8($fp)
+	move $t0, $a2
 	sw $t0, -12($fp)
 	lw $t0, -12($fp)
 	move $a0, $t0
 	li $v0, 11
 	syscall
-	lw $t0, 12($fp)
+	move $t0, $a3
 	sw $t0, -16($fp)
 	lw $t0, -16($fp)
 	move $a0, $t0
@@ -74,10 +122,25 @@ ordre:
 	lw $t1, -20($fp)
 	move $v0, $t1
 	move $sp, $fp
-	lw $ra, -4($fp)
-	lw $fp, 0($fp)
-	jr $ra
+	b __lab_1
 	li $v0, 0
+__lab_1:
+	addi $sp, $sp, 4
+	lw $s7, 0($sp)
+	addi $sp, $sp, 4
+	lw $s6, 0($sp)
+	addi $sp, $sp, 4
+	lw $s5, 0($sp)
+	addi $sp, $sp, 4
+	lw $s4, 0($sp)
+	addi $sp, $sp, 4
+	lw $s3, 0($sp)
+	addi $sp, $sp, 4
+	lw $s2, 0($sp)
+	addi $sp, $sp, 4
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
 	move $sp, $fp
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)

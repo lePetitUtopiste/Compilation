@@ -26,7 +26,7 @@ let tr_fdef fdef =
   in
   let load1 = load op1_reg in
   let load2 = load op2_reg in
-  let reg op vr = (Printf.printf "reg s%s\n" vr); match Graph.VMap.find vr alloc with
+  let reg op vr = (Printf.printf "reg %s\n" vr); match Graph.VMap.find vr alloc with
     | Actual r  -> r
     | Stacked i -> op
   in

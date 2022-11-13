@@ -85,16 +85,17 @@ let tr_fdef fdef =
           de la bonne manière, et renvoyer le résultat dans $v0. *)
 
 
-      let rec parcours_args args =
+      let rec parcours_args args cpt =
         match args with
         (*plein de NOP pour transformer le tout en séquence et pour conserver l'ordre des paramètres
         normalement tous ces nop disparaitront ensuite*)
-        |e::suite -> let r,s = tr_expr e in  (parcours_args suite) @@ (s @@ (Nop ++ Push(r)))
+        |e::suite -> if (cpt >=3) then let r,s = tr_expr e in  (parcours_args suite (cpt + 1)) @@ (s @@ (Nop ++ Push(r)))
+                                   else  let r,s = tr_expr e in  (parcours_args suite (cpt + 1)) @@ (s @@ (Nop ++ Move(("$a"^(string_of_int (cpt+1))),r)))
         | _ -> Nop
       in
-      let s = parcours_args args in
+      let s = parcours_args args 0 in
       (*la restauration de ces variables est réalisé dans aimp2eimp*)
-      "$v0",   s ++ Call(f,List.length args) ++ Pop(List.length args)
+      "$v0",   s ++ Call(f,List.length args) ++ Pop((List.length args)-3)
   in
 
   let rec tr_instr = function

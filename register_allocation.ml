@@ -309,10 +309,16 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    in
    let map_alloc = iterate_keys (VMap.bindings graph) in
 
-   let rec add_param l =
-      match l with
-      | hd :: lt -> Printf.printf "   %s\n" hd; VMap.add hd (decide_placement hd ) (add_param lt)
-      | _ -> map_alloc
+   (*fonction utilisé pour rajouter des valeurs à l'allocation en cas de problèmes*)
+   let add_param l =
+     let rec add_param_rec l cpt =
+        match l with
+        | hd :: lt -> Printf.printf "   %s\n" hd; if (cpt >= 3)
+                                                  then VMap.add hd (decide_placement hd ) (add_param_rec lt (cpt+1))
+                                                  else VMap.add hd (Actual("$a"^string_of_int (cpt+1))) (add_param_rec lt (cpt+1))
+        | _ -> map_alloc
+     in
+     add_param_rec l 0
    in
 
    let rec add_register nom_registre nbr_registre alloc =
@@ -324,8 +330,8 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    in
 
    let map_alloc = add_param fdef.params in
-   let map_alloc = add_register "$a" 3 map_alloc in
-   let map_alloc = add_register "$sp" (-2) map_alloc in
+   (* let map_alloc = add_register "$a" 3 map_alloc in *)
+   (* let map_alloc = add_register "$sp" (-2) map_alloc in *)
 
    Printf.printf "\nResultat allocation: \n\n";
    let print_reg reg =

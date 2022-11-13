@@ -5,23 +5,23 @@ function main(arg) {
   var test;
   var test2;
 
-  Cst(#2 <- 4); {25}
-  Write(*test2 <- #2); {26}
-  Cst(#1 <- 42); {23}
-  Write(*test <- #1); {24}
-  push test; {19}
-  push test2; {18}
-  call add (2); {20}
-  pop 2; {21}
-  Write(*test2 <- $v0); {22}
-  putchar test2; {17}
-  push test; {13}
-  Cst(#0 <- 1); {11}
-  push #0; {12}
-  call add (2); {14}
-  pop 2; {15}
-  Write(*test2 <- $v0); {16}
-  putchar test2; {10}
+  Cst(#2 <- 4); {28}
+  Write(*test2 <- #2); {29}
+  Cst(#1 <- 42); {26}
+  Write(*test <- #1); {27}
+  Move($a2 <- test2); {22}
+  Move($a1 <- test); {21}
+  call add (2); {23}
+  pop -1; {24}
+  Write(*test2 <- $v0); {25}
+  putchar test2; {20}
+  Cst(#0 <- 1); {15}
+  Move($a2 <- #0); {16}
+  Move($a1 <- test); {14}
+  call add (2); {17}
+  pop -1; {18}
+  Write(*test2 <- $v0); {19}
+  putchar test2; {13}
 }
 
 function add(x, y) {
@@ -29,10 +29,10 @@ function add(x, y) {
   var #1;
   var #0;
 
-  Read(#0 <- *x); {36}
-  Read(#1 <- *y); {37}
-  #2 <- #0 + #1; {38}
-  Move($v0 <- #2); {39}
-  return; {40}
+  Read(#0 <- *x); {42}
+  Read(#1 <- *y); {43}
+  #2 <- #0 + #1; {44}
+  Move($v0 <- #2); {45}
+  return; {46}
 }
 

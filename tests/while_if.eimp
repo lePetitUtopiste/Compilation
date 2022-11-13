@@ -1,20 +1,20 @@
 function main {
 1 params
-5 locals
+4 locals
   $t0 <- 44;
   *{-8} <- $t0;
-  $t0 <- *{-8};
-  push $t0;
+  $t1 <- *{-8};
+  $a3 <- $t1;
   $t0 <- 43;
   *{-12} <- $t0;
-  $t0 <- *{-12};
-  push $t0;
+  $t1 <- *{-12};
+  $a2 <- $t1;
   $t0 <- 42;
   *{-16} <- $t0;
-  $t0 <- *{-16};
-  push $t0;
+  $t1 <- *{-16};
+  $a1 <- $t1;
   call ordre;
-  pop 3;
+  pop 0;
   $t0 <- 0;
   *{-20} <- $t0;
   $t1 <- *{-20};
@@ -24,16 +24,16 @@ function main {
 
 function ordre {
 3 params
-7 locals
-  $t0 <- *{4};
+4 locals
+  $t0 <- $a1;
   *{-8} <- $t0;
   $t0 <- *{-8};
   putchar $t0;
-  $t0 <- *{8};
+  $t0 <- $a2;
   *{-12} <- $t0;
   $t0 <- *{-12};
   putchar $t0;
-  $t0 <- *{12};
+  $t0 <- $a3;
   *{-16} <- $t0;
   $t0 <- *{-16};
   putchar $t0;

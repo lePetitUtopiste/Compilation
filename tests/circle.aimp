@@ -24,10 +24,10 @@ function main(arg) {
     #1
   ) {
     Cst(#4 <- 15); {20}
-    push #4; {21}
-    push i; {19}
+    Move($a2 <- #4); {21}
+    Move($a1 <- i); {19}
     call ligne (2); {22}
-    pop 2; {23}
+    pop -1; {23}
     Read(#3 <- *retour); {17}
     putchar #3; {18}
     #2 <- i(+1); {15}

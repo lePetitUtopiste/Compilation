@@ -8,32 +8,32 @@ function main(arg) {
   var #0;
   var test;
 
-  Cst(#6 <- 42); {29}
-  Write(*test <- #6); {30}
+  Cst(#6 <- 42); {32}
+  Write(*test <- #6); {33}
   while (
-    Cst(#0 <- 55); {10}
-    #1 <- test < #0; {11}
+    Cst(#0 <- 55); {13}
+    #1 <- test < #0; {14}
     #1
   ) {
-    Cst(#2 <- 50); {13}
-    #3 <- test < #2; {14}
+    Cst(#2 <- 50); {16}
+    #3 <- test < #2; {17}
     if (#3) {
-      push test; {23}
-      Cst(#5 <- 2); {21}
-      push #5; {22}
-      call add (2); {24}
-      pop 2; {25}
-      Write(*test <- $v0); {26}
+      Cst(#5 <- 2); {25}
+      Move($a2 <- #5); {26}
+      Move($a1 <- test); {24}
+      call add (2); {27}
+      pop -1; {28}
+      Write(*test <- $v0); {29}
     } else {
-      push test; {17}
-      Cst(#4 <- 1); {15}
-      push #4; {16}
-      call add (2); {18}
-      pop 2; {19}
-      Write(*test <- $v0); {20}
-    } {27}
-    putchar test; {12}
-  } {28}
+      Cst(#4 <- 1); {19}
+      Move($a2 <- #4); {20}
+      Move($a1 <- test); {18}
+      call add (2); {21}
+      pop -1; {22}
+      Write(*test <- $v0); {23}
+    } {30}
+    putchar test; {15}
+  } {31}
 }
 
 function add(x, y) {
@@ -41,10 +41,10 @@ function add(x, y) {
   var #1;
   var #0;
 
-  Read(#0 <- *x); {40}
-  Read(#1 <- *y); {41}
-  #2 <- #0 + #1; {42}
-  Move($v0 <- #2); {43}
-  return; {44}
+  Read(#0 <- *x); {46}
+  Read(#1 <- *y); {47}
+  #2 <- #0 + #1; {48}
+  Move($v0 <- #2); {49}
+  return; {50}
 }
 

@@ -13,7 +13,7 @@ main:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -40
+	addi $sp, $sp, -36
 	sw $s0, 0($sp)
 	subi $sp, $sp, 4
 	sw $s1, 0($sp)
@@ -48,18 +48,16 @@ main:
 __lab_8:
 	li $t0, 15
 	sw $t0, -20($fp)
-	lw $t0, -20($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
-	lw $t0, -40($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
+	lw $t1, -20($fp)
+	move $a2, $t1
+	lw $t1, -40($fp)
+	move $a1, $t1
 	move $s7, $a0
 	move $s6, $a1
 	move $s5, $a2
 	move $s4, $a3
 	jal ligne
-	addi $sp, $sp, 8
+	addi $sp, $sp, -4
 	la $t0, retour
 	lw $t0, 0($t0)
 	sw $t0, -24($fp)
@@ -109,7 +107,7 @@ ligne:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -80
+	addi $sp, $sp, -72
 	sw $s0, 0($sp)
 	subi $sp, $sp, 4
 	sw $s1, 0($sp)
@@ -132,9 +130,9 @@ ligne:
 	sw $t0, -76($fp)
 	b __lab_2
 __lab_3:
-	lw $t0, 4($fp)
+	move $t0, $a1
 	sw $t0, -52($fp)
-	lw $t0, 4($fp)
+	move $t0, $a1
 	sw $t0, -48($fp)
 	lw $t0, -52($fp)
 	lw $t1, -48($fp)
@@ -148,9 +146,9 @@ __lab_3:
 	lw $t1, -40($fp)
 	add $t0, $t0, $t1
 	sw $t0, -36($fp)
-	lw $t0, 8($fp)
+	move $t0, $a2
 	sw $t0, -32($fp)
-	lw $t0, 8($fp)
+	move $t0, $a2
 	sw $t0, -28($fp)
 	lw $t0, -32($fp)
 	lw $t1, -28($fp)
@@ -190,7 +188,7 @@ __lab_5:
 	lw $t0, -60($fp)
 	sw $t0, -76($fp)
 __lab_2:
-	lw $t0, 8($fp)
+	move $t0, $a2
 	sw $t0, -72($fp)
 	lw $t0, -72($fp)
 	addi $t0, $t0, 1

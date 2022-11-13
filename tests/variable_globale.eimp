@@ -2,7 +2,7 @@ var global;
 
 function main {
 1 params
-3 locals
+2 locals
   $t0 <- 42;
   *{-8} <- $t0;
   $t0 <- *{-8};
