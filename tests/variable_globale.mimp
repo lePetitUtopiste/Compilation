@@ -1,0 +1,7 @@
+var global;
+
+function main(arg) {
+  global = 42;
+  putchar(global);
+}
+

@@ -13,9 +13,9 @@ let tr_fdef fdef =
 
   let rec tr_instr = function
     | Putchar r          -> move a0 r @@ li v0 11 @@ syscall
-    | Read(rd, Global x) -> la rd x @@ sw rd 0(rd)
+    | Read(rd, Global x) -> la rd x @@ lw rd 0(rd)
     | Read(rd, Stack i)  -> lw rd (i) fp
-    | Write(Global x, r) -> (Printf.printf"impossible d'acceder à %s" x); failwith "failed with not implemented"
+    | Write(Global x, r) -> la t1 x @@ sw r 0 t1
     | Write(Stack i, r)  -> sw r (i) fp
     | Move(rd, r)        -> move rd r
     | Push r             -> sw r 0 sp @@ subi sp sp 4

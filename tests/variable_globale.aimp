@@ -1,0 +1,12 @@
+var global;
+
+function main(arg) {
+  var #1;
+  var #0;
+
+  Cst(#1 <- 42); {12}
+  Write(*global <- #1); {13}
+  Read(#0 <- *global); {10}
+  putchar #0; {11}
+}
+

@@ -1,0 +1,15 @@
+var global;
+
+function main {
+1 params
+3 locals
+  $t0 <- 42;
+  *{-8} <- $t0;
+  $t0 <- *{-8};
+  *global <- $t0;
+  $t0 <- *global;
+  *{-12} <- $t0;
+  $t0 <- *{-12};
+  putchar $t0;
+}
+
