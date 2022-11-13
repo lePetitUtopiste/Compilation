@@ -49,10 +49,10 @@ let liveness fdef =
        out
     | Call(_, n) ->
        (*les registres callee saved sont considéré comme écrit et ne sont donc plus vivant en sorti*)
-       let out1 = VSet.remove "$a0" out in
-       let out1 = VSet.remove "$a1" out1 in
-       let out1 = VSet.remove "$a2" out1 in
-       let out1 = VSet.remove "$a3" out1 in
+       let out1 = VSet.add "$a0" out in
+       let out1 = VSet.add "$a1" out1 in
+       let out1 = VSet.add "$a2" out1 in
+       let out1 = VSet.add "$a3" out1 in
 
        let out1 = VSet.remove "$t2" out1 in
        let out1 = VSet.remove "$t3" out1 in
@@ -275,7 +275,7 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    Graph.print_graph graph;
 
    let cpt = ref 0  in
-   
+
    let rec find_index elt l cpt =
       match l with
       | hd::tl -> Printf.printf "[find_index:%s] %i | %s\n" elt cpt hd;
@@ -315,7 +315,18 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
       | _ -> map_alloc
    in
 
+   let rec add_register nom_registre nbr_registre alloc =
+    if nbr_registre = -1 then alloc
+    else if (nbr_registre = -2) then VMap.add nom_registre  (Actual(nom_registre)) alloc
+    else
+      let nom = (nom_registre ^ Stdlib.string_of_int nbr_registre) in
+      VMap.add nom  (Actual(nom)) (add_register nom_registre (nbr_registre - 1) alloc)
+   in
+
    let map_alloc = add_param fdef.params in
+   let map_alloc = add_register "$a" 3 map_alloc in
+   let map_alloc = add_register "$sp" (-2) map_alloc in
+
    Printf.printf "\nResultat allocation: \n\n";
    let print_reg reg =
     match reg with

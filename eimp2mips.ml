@@ -25,7 +25,11 @@ let tr_fdef fdef =
     | Binop(rd, Add, r1, r2) -> add rd r1 r2
     | Binop(rd, Mul, r1, r2) -> mul rd r1 r2
     | Binop(rd, Lt, r1, r2)  -> slt rd r1 r2
-    | Call(f)            ->  jal f
+    | Call(f)            ->  move "$s7" "$a0"
+                             @@ move "$s6" "$a1"
+                             @@ move "$s5" "$a2"
+                             @@ move "$s4" "$a3"
+                             @@jal f
     | If(r, s1, s2) ->
        let then_label = new_label() in
        let end_label = new_label() in
@@ -43,9 +47,10 @@ let tr_fdef fdef =
 
     | Return ->
       move sp fp
-      @@ lw ra (-4) fp
+      @@ b return_label
+      (* @@ lw ra (-4) fp
       @@ lw fp 0 fp
-      @@ jr ra
+      @@ jr ra *)
 
   and tr_seq (s: Eimp.sequence) = match s with
     | Nop         -> nop
@@ -60,9 +65,49 @@ let tr_fdef fdef =
   @@ subi sp sp 4 (*déplacement de la case*)
   @@ addi fp sp 8 (*on décale le début du pointeur de fonction au dessus de ces deux valeurs*)
   @@ addi sp sp (-4 * fdef.locals) (*on place sp à la fin de la liste des variables locales*)
+  (*stockage des callee-saved*)
+  @@ sw "$s0" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s1" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s2" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s3" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s4" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s5" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s6" 0 sp
+  @@ subi sp sp 4
+  @@ sw "$s7" 0 sp
+  @@ subi sp sp 4
+
   @@ tr_seq (fdef.code) (*on ajoute le code la fonction*)
   (*code en cas d'abscence du return*)
   @@ li "$v0" 0  (*on remet $v0 à 0*)
+
+  @@label return_label
+
+  (*on restaure les callee-saved*)
+
+  @@ addi sp sp 4
+  @@ lw "$s7" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s6" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s5" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s4" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s3" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s2" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s1" 0 sp
+  @@ addi sp sp 4
+  @@ lw "$s0" 0 sp
+
   @@ move sp fp (*on désalloue la pile*)
   @@ lw ra (-4) fp (*on remet le ra précédent dans ra *)
   @@ lw fp 0 fp

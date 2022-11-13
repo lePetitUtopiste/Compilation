@@ -14,6 +14,22 @@ main:
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
 	addi $sp, $sp, -40
+	sw $s0, 0($sp)
+	subi $sp, $sp, 4
+	sw $s1, 0($sp)
+	subi $sp, $sp, 4
+	sw $s2, 0($sp)
+	subi $sp, $sp, 4
+	sw $s3, 0($sp)
+	subi $sp, $sp, 4
+	sw $s4, 0($sp)
+	subi $sp, $sp, 4
+	sw $s5, 0($sp)
+	subi $sp, $sp, 4
+	sw $s6, 0($sp)
+	subi $sp, $sp, 4
+	sw $s7, 0($sp)
+	subi $sp, $sp, 4
 	li $t0, 0
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
@@ -38,6 +54,10 @@ __lab_8:
 	lw $t0, -40($fp)
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
+	move $s7, $a0
+	move $s6, $a1
+	move $s5, $a2
+	move $s4, $a3
 	jal ligne
 	addi $sp, $sp, 8
 	la $t0, retour
@@ -62,6 +82,23 @@ __lab_7:
 	lw $t0, -32($fp)
 	bnez $t0, __lab_8
 	li $v0, 0
+__lab_6:
+	addi $sp, $sp, 4
+	lw $s7, 0($sp)
+	addi $sp, $sp, 4
+	lw $s6, 0($sp)
+	addi $sp, $sp, 4
+	lw $s5, 0($sp)
+	addi $sp, $sp, 4
+	lw $s4, 0($sp)
+	addi $sp, $sp, 4
+	lw $s3, 0($sp)
+	addi $sp, $sp, 4
+	lw $s2, 0($sp)
+	addi $sp, $sp, 4
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
 	move $sp, $fp
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)
@@ -73,6 +110,22 @@ ligne:
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
 	addi $sp, $sp, -80
+	sw $s0, 0($sp)
+	subi $sp, $sp, 4
+	sw $s1, 0($sp)
+	subi $sp, $sp, 4
+	sw $s2, 0($sp)
+	subi $sp, $sp, 4
+	sw $s3, 0($sp)
+	subi $sp, $sp, 4
+	sw $s4, 0($sp)
+	subi $sp, $sp, 4
+	sw $s5, 0($sp)
+	subi $sp, $sp, 4
+	sw $s6, 0($sp)
+	subi $sp, $sp, 4
+	sw $s7, 0($sp)
+	subi $sp, $sp, 4
 	li $t0, 0
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
@@ -149,6 +202,23 @@ __lab_2:
 	lw $t0, -64($fp)
 	bnez $t0, __lab_3
 	li $v0, 0
+__lab_1:
+	addi $sp, $sp, 4
+	lw $s7, 0($sp)
+	addi $sp, $sp, 4
+	lw $s6, 0($sp)
+	addi $sp, $sp, 4
+	lw $s5, 0($sp)
+	addi $sp, $sp, 4
+	lw $s4, 0($sp)
+	addi $sp, $sp, 4
+	lw $s3, 0($sp)
+	addi $sp, $sp, 4
+	lw $s2, 0($sp)
+	addi $sp, $sp, 4
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
 	move $sp, $fp
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)

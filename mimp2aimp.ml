@@ -93,7 +93,8 @@ let tr_fdef fdef =
         | _ -> Nop
       in
       let s = parcours_args args in
-      "$v0",  s ++ Call(f,List.length args) ++ Pop(List.length args) 
+      (*la restauration de ces variables est réalisé dans aimp2eimp*)
+      "$v0",   s ++ Call(f,List.length args) ++ Pop(List.length args)
   in
 
   let rec tr_instr = function
@@ -124,11 +125,9 @@ let tr_fdef fdef =
   in
 
   let code =
-    (* À ce code, il faut ajouter la sauvegarde et la restauration
-       des registres virtuels callee_saved. *)
-  let s1 = Nop ++ Aimp.Push("$s0") ++ Aimp.Push("$s1") ++ Aimp.Push("$s2") ++ Aimp.Push("$s3") ++ Aimp.Push("$s4") in
-  let s1 = s1 ++ Aimp.Push("$s5") ++ Aimp.Push("$s6") ++ Aimp.Push("$s7") in
-  let s2 = Nop ++ Pop(9) in
+  let s1 = Nop ++ Aimp.Push("$a0") ++ Aimp.Push("$a1") ++ Aimp.Push("$a2") ++ Aimp.Push("$a3")  in
+  (* let s1 = s1 ++ Aimp.Push("$s5") ++ Aimp.Push("$s6") ++ Aimp.Push("$s7") in *)
+  let s2 = Nop ++ Pop(1) ++ Read("$a3","$sp") ++ Pop(1) ++ Read("$a2","$sp") ++ Pop(1) ++ Read("$a1","$sp") ++ Pop(1) ++ Read("$a0","$sp") in
   (*s1 @@*) tr_seq Mimp.(fdef.code) (*@@ s2*)
   in
   {
