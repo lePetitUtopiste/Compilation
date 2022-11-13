@@ -29,6 +29,7 @@ main:
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
 	jal add
+	addi $sp, $sp, 8
 	sw $v0, -24($fp)
 	lw $t0, -24($fp)
 	move $a0, $t0
@@ -43,6 +44,7 @@ main:
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
 	jal add
+	addi $sp, $sp, 8
 	sw $v0, -24($fp)
 	lw $t0, -24($fp)
 	move $a0, $t0

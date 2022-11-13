@@ -8,8 +8,8 @@ function main(arg) {
   var #0;
   var test;
 
-  Cst(#6 <- 42); {27}
-  Write(*test <- #6); {28}
+  Cst(#6 <- 42); {29}
+  Write(*test <- #6); {30}
   while (
     Cst(#0 <- 55); {10}
     #1 <- test < #0; {11}
@@ -18,20 +18,22 @@ function main(arg) {
     Cst(#2 <- 50); {13}
     #3 <- test < #2; {14}
     if (#3) {
-      push test; {22}
-      Cst(#5 <- 2); {20}
-      push #5; {21}
-      call add (2); {23}
-      Write(*test <- $v0); {24}
+      push test; {23}
+      Cst(#5 <- 2); {21}
+      push #5; {22}
+      call add (2); {24}
+      pop 2; {25}
+      Write(*test <- $v0); {26}
     } else {
       push test; {17}
       Cst(#4 <- 1); {15}
       push #4; {16}
       call add (2); {18}
-      Write(*test <- $v0); {19}
-    } {25}
+      pop 2; {19}
+      Write(*test <- $v0); {20}
+    } {27}
     putchar test; {12}
-  } {26}
+  } {28}
 }
 
 function add(x, y) {
@@ -39,10 +41,10 @@ function add(x, y) {
   var #1;
   var #0;
 
-  Read(#0 <- *x); {38}
-  Read(#1 <- *y); {39}
-  #2 <- #0 + #1; {40}
-  Move($v0 <- #2); {41}
-  return; {42}
+  Read(#0 <- *x); {40}
+  Read(#1 <- *y); {41}
+  #2 <- #0 + #1; {42}
+  Move($v0 <- #2); {43}
+  return; {44}
 }
 

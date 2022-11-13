@@ -1,8 +1,7 @@
-var retour;
 var espace;
+var retour;
 
 function main(arg) {
-  var #8;
   var #7;
   var #6;
   var #5;
@@ -13,26 +12,26 @@ function main(arg) {
   var #0;
   var i;
 
-  Cst(#8 <- 0); {26}
-  Write(*i <- #8); {27}
-  Cst(#7 <- 10); {24}
-  Write(*retour <- #7); {25}
-  Cst(#6 <- 32); {22}
-  Write(*espace <- #6); {23}
+  Cst(#7 <- 0); {26}
+  Write(*i <- #7); {27}
+  Cst(#6 <- 10); {24}
+  Write(*retour <- #6); {25}
+  Cst(#5 <- 32); {22}
+  Write(*espace <- #5); {23}
   while (
-    Read(#0 <- *arg); {10}
-    #1 <- #0(+1); {11}
-    #2 <- i < #1; {12}
-    #2
+    Cst(#0 <- 16); {10}
+    #1 <- i < #0; {11}
+    #1
   ) {
-    push i; {19}
-    Read(#5 <- *arg); {17}
-    push #5; {18}
-    call ligne (2); {20}
-    Read(#4 <- *retour); {15}
-    putchar #4; {16}
-    #3 <- i(+1); {13}
-    Write(*i <- #3); {14}
+    Cst(#4 <- 15); {17}
+    push #4; {18}
+    push i; {16}
+    call ligne (2); {19}
+    pop 2; {20}
+    Read(#3 <- *retour); {14}
+    putchar #3; {15}
+    #2 <- i(+1); {12}
+    Write(*i <- #2); {13}
   } {21}
 }
 

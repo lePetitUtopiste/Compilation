@@ -84,15 +84,16 @@ let tr_fdef fdef =
        (* Il faut réaliser ici la convention d'appel : passer les arguments
           de la bonne manière, et renvoyer le résultat dans $v0. *)
 
+
       let rec parcours_args args =
         match args with
         (*plein de NOP pour transformer le tout en séquence et pour conserver l'ordre des paramètres
         normalement tous ces nop disparaitront ensuite*)
-        |e::suite -> let r,s = tr_expr e in (s ++Push(r)) @@ (parcours_args suite)
+        |e::suite -> let r,s = tr_expr e in  (parcours_args suite) @@ (s @@ (Nop ++ Push(r)))
         | _ -> Nop
       in
       let s = parcours_args args in
-      "$v0",  s ++ Call(f,List.length args)
+      "$v0",  s ++ Call(f,List.length args) ++ Pop(List.length args) 
   in
 
   let rec tr_instr = function

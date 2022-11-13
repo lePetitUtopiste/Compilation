@@ -55,16 +55,17 @@ let tr_fdef fdef =
 
   (* code de la fonction *)
   sw fp 0 sp  (*sauvegarde de fp a la place pointé par sp*)
-  @@ subi sp sp 4 (*on déplace sp à la case supérieur *)
+  @@ subi sp sp 4 (*on déplace sp à la case inférieure *)
   @@ sw ra 0 sp (*sauvegarde de l'adresse de retour*)
   @@ subi sp sp 4 (*déplacement de la case*)
   @@ addi fp sp 8 (*on décale le début du pointeur de fonction au dessus de ces deux valeurs*)
   @@ addi sp sp (-4 * fdef.locals) (*on place sp à la fin de la liste des variables locales*)
   @@ tr_seq (fdef.code) (*on ajoute le code la fonction*)
   (*code en cas d'abscence du return*)
-  @@ li t0 0  (*on remet t0 à 0*)
+  @@ li "$v0" 0  (*on remet $v0 à 0*)
   @@ move sp fp (*on désalloue la pile*)
   @@ lw ra (-4) fp (*on remet le ra précédent dans ra *)
+  @@ lw fp 0 fp
   @@ jr ra (*on retourne au bout de  code de la fonction précédente*)
 
 

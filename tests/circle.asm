@@ -13,11 +13,11 @@ main:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -44
+	addi $sp, $sp, -40
 	li $t0, 0
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
-	sw $t0, -44($fp)
+	sw $t0, -40($fp)
 	li $t0, 10
 	sw $t0, -12($fp)
 	lw $t0, -12($fp)
@@ -30,15 +30,16 @@ main:
 	sw $t0, 0($t1)
 	b __lab_7
 __lab_8:
-	lw $t0, -44($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
-	lw $t0, 4($fp)
+	li $t0, 15
 	sw $t0, -20($fp)
 	lw $t0, -20($fp)
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
+	lw $t0, -40($fp)
+	sw $t0, 0($sp)
+	subi $sp, $sp, 4
 	jal ligne
+	addi $sp, $sp, 8
 	la $t0, retour
 	lw $t0, 0($t0)
 	sw $t0, -24($fp)
@@ -46,26 +47,24 @@ __lab_8:
 	move $a0, $t0
 	li $v0, 11
 	syscall
-	lw $t0, -44($fp)
+	lw $t0, -40($fp)
 	addi $t0, $t0, 1
 	sw $t0, -28($fp)
 	lw $t0, -28($fp)
-	sw $t0, -44($fp)
-__lab_7:
-	lw $t0, 4($fp)
 	sw $t0, -40($fp)
-	lw $t0, -40($fp)
-	addi $t0, $t0, 1
+__lab_7:
+	li $t0, 16
 	sw $t0, -36($fp)
-	lw $t0, -44($fp)
+	lw $t0, -40($fp)
 	lw $t1, -36($fp)
 	slt $t0, $t0, $t1
 	sw $t0, -32($fp)
 	lw $t0, -32($fp)
 	bnez $t0, __lab_8
-	li $t0, 0
+	li $v0, 0
 	move $sp, $fp
 	lw $ra, -4($fp)
+	lw $fp, 0($fp)
 	jr $ra
 ligne:
 	sw $fp, 0($sp)
@@ -149,9 +148,10 @@ __lab_2:
 	sw $t0, -64($fp)
 	lw $t0, -64($fp)
 	bnez $t0, __lab_3
-	li $t0, 0
+	li $v0, 0
 	move $sp, $fp
 	lw $ra, -4($fp)
+	lw $fp, 0($fp)
 	jr $ra
 #built-in atoi
 atoi:
@@ -172,7 +172,7 @@ atoi_error:
 atoi_end:
 	jr $ra
 .data
-retour:
-	.word 0
 espace:
+	.word 0
+retour:
 	.word 0

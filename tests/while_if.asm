@@ -13,87 +13,74 @@ main:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -36
-	li $t0, 42
+	addi $sp, $sp, -20
+	li $t0, 44
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
-	sw $t0, -36($fp)
-	b __lab_3
-__lab_4:
-	li $t0, 50
-	sw $t0, -24($fp)
-	lw $t0, -36($fp)
-	lw $t1, -24($fp)
-	slt $t0, $t0, $t1
-	sw $t0, -20($fp)
-	lw $t0, -20($fp)
-	bnez $t0, __lab_5
-	lw $t0, -36($fp)
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
-	li $t0, 1
-	sw $t0, -16($fp)
-	lw $t0, -16($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
-	jal add
-	addi $sp, $sp, 8
-	sw $v0, -36($fp)
-	b __lab_6
-__lab_5:
-	lw $t0, -36($fp)
-	sw $t0, 0($sp)
-	subi $sp, $sp, 4
-	li $t0, 2
+	li $t0, 43
 	sw $t0, -12($fp)
 	lw $t0, -12($fp)
 	sw $t0, 0($sp)
 	subi $sp, $sp, 4
-	jal add
-	addi $sp, $sp, 8
-	sw $v0, -36($fp)
-__lab_6:
-	lw $t0, -36($fp)
-	move $a0, $t0
-	li $v0, 11
-	syscall
-__lab_3:
-	li $t0, 55
-	sw $t0, -32($fp)
-	lw $t0, -36($fp)
-	lw $t1, -32($fp)
-	slt $t0, $t0, $t1
-	sw $t0, -28($fp)
-	lw $t0, -28($fp)
-	bnez $t0, __lab_4
-	li $t0, 0
-	move $sp, $fp
-	lw $ra, -4($fp)
-	jr $ra
-add:
-	sw $fp, 0($sp)
-	subi $sp, $sp, 4
-	sw $ra, 0($sp)
-	subi $sp, $sp, 4
-	addi $fp, $sp, 8
-	addi $sp, $sp, -20
-	lw $t0, 4($fp)
+	li $t0, 42
 	sw $t0, -16($fp)
-	lw $t0, 8($fp)
-	sw $t0, -12($fp)
 	lw $t0, -16($fp)
-	lw $t1, -12($fp)
-	add $t0, $t0, $t1
-	sw $t0, -8($fp)
-	lw $t1, -8($fp)
+	sw $t0, 0($sp)
+	subi $sp, $sp, 4
+	jal ordre
+	addi $sp, $sp, 12
+	li $t0, 0
+	sw $t0, -20($fp)
+	lw $t1, -20($fp)
 	move $v0, $t1
 	move $sp, $fp
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)
 	jr $ra
-	li $t0, 0
+	li $v0, 0
 	move $sp, $fp
 	lw $ra, -4($fp)
+	lw $fp, 0($fp)
+	jr $ra
+ordre:
+	sw $fp, 0($sp)
+	subi $sp, $sp, 4
+	sw $ra, 0($sp)
+	subi $sp, $sp, 4
+	addi $fp, $sp, 8
+	addi $sp, $sp, -28
+	lw $t0, 4($fp)
+	sw $t0, -8($fp)
+	lw $t0, -8($fp)
+	move $a0, $t0
+	li $v0, 11
+	syscall
+	lw $t0, 8($fp)
+	sw $t0, -12($fp)
+	lw $t0, -12($fp)
+	move $a0, $t0
+	li $v0, 11
+	syscall
+	lw $t0, 12($fp)
+	sw $t0, -16($fp)
+	lw $t0, -16($fp)
+	move $a0, $t0
+	li $v0, 11
+	syscall
+	li $t0, 0
+	sw $t0, -20($fp)
+	lw $t1, -20($fp)
+	move $v0, $t1
+	move $sp, $fp
+	lw $ra, -4($fp)
+	lw $fp, 0($fp)
+	jr $ra
+	li $v0, 0
+	move $sp, $fp
+	lw $ra, -4($fp)
+	lw $fp, 0($fp)
 	jr $ra
 #built-in atoi
 atoi:

@@ -275,6 +275,7 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    Graph.print_graph graph;
 
    let cpt = ref 0  in
+   
    let rec find_index elt l cpt =
       match l with
       | hd::tl -> Printf.printf "[find_index:%s] %i | %s\n" elt cpt hd;

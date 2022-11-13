@@ -1,5 +1,5 @@
-var retour;
 var espace;
+var retour;
 
 function main(arg) {
   var i;
@@ -7,8 +7,8 @@ function main(arg) {
   i = 0;
   retour = 10;
   espace = 32;
-  while ((i < (arg(+1)))) {
-    ligne(i, arg);
+  while ((i < 16)) {
+    ligne(i, 15);
     putchar(retour);
     i = (i(+1));
   }

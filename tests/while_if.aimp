@@ -1,0 +1,36 @@
+function main(arg) {
+  var #3;
+  var #2;
+  var #1;
+  var #0;
+
+  Cst(#3 <- 44); {17}
+  push #3; {18}
+  Cst(#2 <- 43); {15}
+  push #2; {16}
+  Cst(#1 <- 42); {13}
+  push #1; {14}
+  call ordre (3); {19}
+  pop 3; {20}
+  Cst(#0 <- 0); {10}
+  Move($v0 <- #0); {11}
+  return; {12}
+}
+
+function ordre(a, b, c) {
+  var #3;
+  var #2;
+  var #1;
+  var #0;
+
+  Read(#3 <- *a); {37}
+  putchar #3; {38}
+  Read(#2 <- *b); {35}
+  putchar #2; {36}
+  Read(#1 <- *c); {33}
+  putchar #1; {34}
+  Cst(#0 <- 0); {30}
+  Move($v0 <- #0); {31}
+  return; {32}
+}
+

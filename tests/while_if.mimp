@@ -1,0 +1,12 @@
+function main(arg) {
+  ordre(42, 43, 44);
+  return(0);
+}
+
+function ordre(a, b, c) {
+  putchar(a);
+  putchar(b);
+  putchar(c);
+  return(0);
+}
+
