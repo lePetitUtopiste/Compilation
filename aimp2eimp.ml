@@ -18,11 +18,11 @@ let tr_fdef fdef =
 
   let save vr = (Printf.printf "save %s\n" vr); match Graph.VMap.find vr alloc with
     | Actual r  -> Nop
-    | Stacked i -> Instr(Write(Stack(-i-2), dst_reg))
+    | Stacked i -> Instr(Write(Stack(i), dst_reg))
   in
   let load op vr = (Printf.printf "load %s\n" vr);match Graph.VMap.find vr alloc with
     | Actual r  -> Nop
-    | Stacked i -> Instr(Read(op, Stack(-i-2)))
+    | Stacked i -> Instr(Read(op, Stack(i)))
   in
   let load1 = load op1_reg in
   let load2 = load op2_reg in
@@ -42,13 +42,27 @@ let tr_fdef fdef =
        @@ Instr(Putchar(op1 vr))
     | Aimp.Read(vrd, x) ->
         (*plusieurs cas si x est une variable globale ou pas*)
-        
-        Instr(Read(dst vrd,Global(x))) @@ save vrd
+      let result =
+        try
+          match Graph.VMap.find x alloc  with
+          | Stacked(i) -> Instr(Read(dst vrd,Stack(i))) @@ save vrd
+          | Actual(r) ->  Instr(Move(dst vrd, r)) @@ save vrd
+        with
+          | Not_found -> Instr(Read(dst vrd,Global(x))) @@ save vrd
+          in
+          result
     | Aimp.Write(x, vr) ->
-      if
-       load1 vr @@ Instr(Write(Global(x),op1 vr))
+      let result =
+       try
+         match Graph.VMap.find x alloc with
+         | Stacked(i) -> load1 vr @@ Instr(Write(Stack(i),op1 vr))
+         | Actual(r) ->  load1 vr @@ Instr(Move(r,op1 vr))
+       with
+        | Not_found -> load1 vr @@ Instr(Write(Global(x),op1 vr))
+        in
+        result
     | Aimp.Move(vrd, vr) ->
-        load2 vr @@ Instr(Move(dst vrd,op2 vrd)) @@ save vrd
+        load2 vr @@ Instr(Move(dst vrd,op2 vr)) @@ save vrd
     | Aimp.Push vr ->
        load1 vr @@ Instr(Push(op1 vr))
     | Aimp.Pop n ->
@@ -68,7 +82,7 @@ let tr_fdef fdef =
        load1 vr @@ Instr(If(dst vr, tr_seq s1, tr_seq s2))
     | Aimp.While(s1, vr, s2) ->
        let s1_trad = tr_seq s1 in
-       load1 vr @@ Instr(While(s1_trad, op1 vr, tr_seq s2))
+       Instr(While(s1_trad @@ load1 vr, op1 vr, tr_seq s2))
     | Aimp.Return ->
        Instr(Return)
 

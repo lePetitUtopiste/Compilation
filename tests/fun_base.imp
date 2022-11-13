@@ -1,8 +1,20 @@
 function main(arg)
 {
-  var test_local;
-  var test;
-  test = 1;
-  test_local = test + 1;
-  return 0;
+	var test;
+	test = 42;
+	while (test < 55)
+	{
+		if (test < 50)
+		{
+		 test = add(test,2);
+		}else{
+			test = add(test,1);
+		}
+		putchar(test);
+  	}
+}
+
+function add(x,y)
+{
+	return x + y;
 }

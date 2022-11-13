@@ -61,9 +61,7 @@ let liveness fdef =
        let out1 = VSet.remove "$t6" out1 in
        let out1 = VSet.remove "$t7" out1 in
        let out1 = VSet.remove "$t8" out1 in
-       let out1 = VSet.remove "$t9" out1 in
-
-       VSet.remove "$v0" out1
+       VSet.remove "$t9" out1
 
        (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
@@ -75,8 +73,7 @@ let liveness fdef =
        let out1 = VSet.add "$s4" out1 in
        let out1 = VSet.add "$s5" out1 in
        let out1 = VSet.add "$s6" out1 in
-       let out1 = VSet.add "$s7" out1 in
-       VSet.add "$s8" out1
+       VSet.add "$s7" out1
 
     | If(r, s1, s2) ->
        let inS1 = sequence s1 out in
@@ -267,25 +264,39 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
        ou un emplacement de pile,
      - le nombre d'emplacements de pile utilisés.
    *)
-   Printf.printf "debut exécution de l'allocation\n";
+   Printf.printf "debut exécution de l'allocation pour la fonctions %s\n" fdef.name;
+   Printf.printf "\nparam:\n\n";
+   List.iter (fun x -> Printf.printf "- %s\n" x) fdef.params;
+   Printf.printf "\nlocales:\n\n";
+   List.iter (fun x -> Printf.printf "- %s\n\n\n" x) fdef.locals;
+
+
    let graph = interference_graph fdef in
    Graph.print_graph graph;
 
    let cpt = ref 0  in
    let rec find_index elt l cpt =
       match l with
-      | hd::tl -> if elt == hd then cpt else find_index elt tl cpt+1
-      | _ -> -1
+      | hd::tl -> Printf.printf "[find_index:%s] %i | %s\n" elt cpt hd;
+                  if (elt = hd)
+                    then begin
+                      Printf.printf "[find_index:%s] fin recherche %i" elt cpt;
+                      cpt
+                      end
+                    else
+                      find_index elt tl (cpt+1)
+      | _ -> failwith "Not_found"
    in
+   (*va chercher le nom dans la liste des param et des local et assigné un
+   décalage respectivement de la forme 4*x -4*x *)
    let decide_placement nom  =
-    if (String.get nom 0) == '$'then begin (Printf.printf "et un registre %s\n" nom); Actual(nom) end
+    if (String.get nom 0) == '$'then begin Actual(nom) end
     else
         begin
         cpt := !cpt + 1;
-        Printf.printf "et une variable sur le tas du nom de %s\n c'est la %i\n" nom !cpt;
-        if List.mem nom fdef.locals then Stacked (-4*(find_index nom fdef.locals 0 ))
+        if List.mem nom fdef.locals then Stacked (-4*(find_index nom fdef.locals 2 ))
         else
-          if List.mem nom fdef.params then Stacked (4*(find_index nom fdef.params 0 ))
+          if List.mem nom fdef.params then Stacked (4*(find_index nom fdef.params 1 ))
           else failwith "oups les variables globales apparaissent dans le graphe"
         end
    in
@@ -297,11 +308,20 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    in
    let map_alloc = iterate_keys (VMap.bindings graph) in
 
+   let rec add_param l =
+      match l with
+      | hd :: lt -> Printf.printf "   %s\n" hd; VMap.add hd (decide_placement hd ) (add_param lt)
+      | _ -> map_alloc
+   in
+
+   let map_alloc = add_param fdef.params in
+   Printf.printf "\nResultat allocation: \n\n";
    let print_reg reg =
     match reg with
-    | Actual(r) -> Printf.printf "reg %s\n" r
-    | Stacked(i) -> Printf.printf "stack pos %i\n" i
+    | Actual(r) -> Printf.printf "- reg %s\n" r
+    | Stacked(i) -> Printf.printf "- stack pos %i\n" i
     in
 
+    (*affichage de la map d'allocation*)
    VMap.iter (fun key data -> (Printf.printf "%s -> " key); print_reg data ) map_alloc;
    (map_alloc, !cpt)

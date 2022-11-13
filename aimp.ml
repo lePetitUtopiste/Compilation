@@ -128,13 +128,13 @@ let pp_program prog out_channel =
       | Putchar vr ->
          print "putchar %s;" vr
       | Read(vrd, x) ->
-         print "%s <- *%s;" vrd x
+         print "Read(%s <- *%s);" vrd x
       | Write(x, vr) ->
          print "Write(*%s <- %s);" x vr
       | Move(vrd, vr) ->
-         print "%s <- %s;" vrd vr
+         print "Move(%s <- %s);" vrd vr
       | Cst(vrd, n) ->
-         print "%s <- %i;" vrd n
+         print "Cst(%s <- %i);" vrd n
       | Unop(vrd, Addi n, vr) ->
          print "%s <- %s(+%i);" vrd vr n
       | Binop(vrd, op, vr1, vr2) ->

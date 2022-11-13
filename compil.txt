@@ -1,0 +1,107 @@
+debut exécution de l'allocation
+Graphe d'interférence :
+  #0: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7
+    | 
+  #1: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7
+    | 
+  #2: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7
+    | 
+  #3: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7 test test_local
+    | 
+  #4: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7 test test_local
+    | 
+  $s0: #0 #1 #2 #3 #4 $v0
+    | 
+  $s1: #0 #1 #2 #3 #4 $v0
+    | 
+  $s2: #0 #1 #2 #3 #4 $v0
+    | 
+  $s3: #0 #1 #2 #3 #4 $v0
+    | 
+  $s4: #0 #1 #2 #3 #4 $v0
+    | 
+  $s5: #0 #1 #2 #3 #4 $v0
+    | 
+  $s6: #0 #1 #2 #3 #4 $v0
+    | 
+  $s7: #0 #1 #2 #3 #4 $v0
+    | 
+  $v0: $s0 $s1 $s2 $s3 $s4 $s5 $s6 $s7
+    | 
+  test: #3 #4
+    | 
+  test_local: #3 #4
+    | 
+et une variable sur la pile du nom de test_local
+ c'est la 1
+et une variable sur la pile du nom de test
+ c'est la 2
+et un registre $v0
+et un registre $s7
+et un registre $s6
+et un registre $s5
+et un registre $s4
+et un registre $s3
+et un registre $s2
+et un registre $s1
+et un registre $s0
+et une variable sur la pile du nom de #4
+ c'est la 3
+et une variable sur la pile du nom de #3
+ c'est la 4
+et une variable sur la pile du nom de #2
+ c'est la 5
+et une variable sur la pile du nom de #1
+ c'est la 6
+et une variable sur la pile du nom de #0
+ c'est la 7
+les params de main sont
+   arg
+et une variable sur la pile du nom de arg
+ c'est la 8
+#0 -> stack pos -16
+#1 -> stack pos -12
+#2 -> stack pos -8
+#3 -> stack pos -4
+#4 -> stack pos 0
+$s0 -> reg $s0
+$s1 -> reg $s1
+$s2 -> reg $s2
+$s3 -> reg $s3
+$s4 -> reg $s4
+$s5 -> reg $s5
+$s6 -> reg $s6
+$s7 -> reg $s7
+$v0 -> reg $v0
+arg -> stack pos 0
+test -> stack pos -24
+test_local -> stack pos -24
+fin allocation pour la fonction main
+save $v0
+reg s#0
+reg s$v0
+load #0
+save #0
+reg s#0
+reg s#1
+load #1
+save #1
+reg s#1
+reg s#2
+load #2
+save #2
+reg s#2
+reg stest
+load test
+reg stest_local
+load test_local
+reg s#3
+load #3
+save #3
+reg stest
+reg s#3
+load test
+reg s#4
+load #4
+save #4
+reg s#4

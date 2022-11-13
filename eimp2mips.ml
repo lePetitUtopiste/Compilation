@@ -14,9 +14,9 @@ let tr_fdef fdef =
   let rec tr_instr = function
     | Putchar r          -> move a0 r @@ li v0 11 @@ syscall
     | Read(rd, Global x) -> la rd x @@ sw rd 0(rd)
-    | Read(rd, Stack i)  -> lw rd (-i) fp
+    | Read(rd, Stack i)  -> lw rd (i) fp
     | Write(Global x, r) -> (Printf.printf"impossible d'acceder à %s" x); failwith "failed with not implemented"
-    | Write(Stack i, r)  -> sw r (-i) fp
+    | Write(Stack i, r)  -> sw r (i) fp
     | Move(rd, r)        -> move rd r
     | Push r             -> sw r 0 sp @@ subi sp sp 4
     | Pop n              -> addi sp sp (4*n)
@@ -25,7 +25,7 @@ let tr_fdef fdef =
     | Binop(rd, Add, r1, r2) -> add rd r1 r2
     | Binop(rd, Mul, r1, r2) -> mul rd r1 r2
     | Binop(rd, Lt, r1, r2)  -> slt rd r1 r2
-    | Call(f)            -> b f
+    | Call(f)            ->  jal f
     | If(r, s1, s2) ->
        let then_label = new_label() in
        let end_label = new_label() in
@@ -39,14 +39,13 @@ let tr_fdef fdef =
         @@ tr_seq s2
         @@ label test_label
         @@ tr_seq s1
-        @@ bnez t0 code_label
+        @@ bnez r code_label
 
     | Return ->
-      b return_label
-      (*move sp fp
+      move sp fp
       @@ lw ra (-4) fp
       @@ lw fp 0 fp
-      @@ jr ra*)
+      @@ jr ra
 
   and tr_seq (s: Eimp.sequence) = match s with
     | Nop         -> nop
@@ -62,8 +61,7 @@ let tr_fdef fdef =
   @@ addi fp sp 8 (*on décale le début du pointeur de fonction au dessus de ces deux valeurs*)
   @@ addi sp sp (-4 * fdef.locals) (*on place sp à la fin de la liste des variables locales*)
   @@ tr_seq (fdef.code) (*on ajoute le code la fonction*)
-  (*code du return*)
-  @@ label return_label
+  (*code en cas d'abscence du return*)
   @@ li t0 0  (*on remet t0 à 0*)
   @@ move sp fp (*on désalloue la pile*)
   @@ lw ra (-4) fp (*on remet le ra précédent dans ra *)

@@ -1,0 +1,36 @@
+function main(arg) {
+  var #2;
+  var #1;
+  var #0;
+  var test;
+  var test2;
+
+  Cst(#2 <- 4); {23}
+  Write(*test2 <- #2); {24}
+  Cst(#1 <- 42); {21}
+  Write(*test <- #1); {22}
+  push test; {18}
+  push test2; {17}
+  call add (2); {19}
+  Write(*test2 <- $v0); {20}
+  putchar test2; {16}
+  push test; {13}
+  Cst(#0 <- 1); {11}
+  push #0; {12}
+  call add (2); {14}
+  Write(*test2 <- $v0); {15}
+  putchar test2; {10}
+}
+
+function add(x, y) {
+  var #2;
+  var #1;
+  var #0;
+
+  Read(#0 <- *x); {34}
+  Read(#1 <- *y); {35}
+  #2 <- #0 + #1; {36}
+  Move($v0 <- #2); {37}
+  return; {38}
+}
+
