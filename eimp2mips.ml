@@ -25,10 +25,11 @@ let tr_fdef fdef =
     | Binop(rd, Add, r1, r2) -> add rd r1 r2
     | Binop(rd, Mul, r1, r2) -> mul rd r1 r2
     | Binop(rd, Lt, r1, r2)  -> slt rd r1 r2
-    | Call(f)            ->  move "$s7" "$a0"
-                             @@ move "$s6" "$a1"
-                             @@ move "$s5" "$a2"
-                             @@ move "$s4" "$a3"
+    | Call(f)            ->  move s7 a0
+                             (*sauvegarde des registre $a avant d'être utilisé pour les paramètres*)
+                             (* @@ move s7 a1
+                             @@ move s6 a2
+                             @@ move s5 a3 *)
                              @@jal f
     | If(r, s1, s2) ->
        let then_label = new_label() in

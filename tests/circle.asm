@@ -53,9 +53,6 @@ __lab_8:
 	lw $t1, -40($fp)
 	move $a1, $t1
 	move $s7, $a0
-	move $s6, $a1
-	move $s5, $a2
-	move $s4, $a3
 	jal ligne
 	addi $sp, $sp, -4
 	la $t0, retour
