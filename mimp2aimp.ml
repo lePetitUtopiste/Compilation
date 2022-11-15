@@ -98,11 +98,12 @@ let tr_fdef fdef =
       let s2 = Nop ++ Pop(1) ++ Read("$t7","$sp") ++ Pop(1) ++ Read("$t6","$sp") ++ Pop(1) ++ Read("$t5","$sp") ++ Pop(1) ++ Read("$t4","$sp")++ Pop(1)
                ++ Read("$t3","$sp") ++ Pop(1) ++ Read("$t2","$sp") in *)
 
-      (*passage des paramètres a1-3 dans s5-7 pour assurer leur conservation au retour de l'appel*)
+      (*passage des paramètres $a[1-3] dans $s[5-7] pour assurer leurs conservations
+      au retour de l'appel*)
       "$v0",  (Nop ++ Move("$s5","$a1") ++ Move("$s6","$a2") ++ Move("$s7","$a3"))
               @@  ( s ++ Call(f,List.length args) ++ Pop( max ((List.length args)-3) 0  ))
               @@ (Nop ++ Move("$a1","$s5") ++ Move("$a2","$s6") ++ Move("$a3","$s7"))
-              (*récupération des paramètres dans ces variables*)
+              (*récupération des paramètres depuis $s[5-7]*)
 
   in
 

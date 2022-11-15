@@ -1,0 +1,57 @@
+function main {
+1 params
+4 locals
+  $t0 <- 42;
+  *{-8} <- $t0;
+  $t0 <- *{-8};
+  *{-16} <- $t0;
+  $t0 <- 43;
+  *{-12} <- $t0;
+  $t0 <- *{-12};
+  *{-20} <- $t0;
+  $s5 <- $a1;
+  $s6 <- $a2;
+  $s7 <- $a3;
+  $t1 <- *{-16};
+  $a1 <- $t1;
+  call affiche_1;
+  pop 0;
+  $a1 <- $s5;
+  $a2 <- $s6;
+  $a3 <- $s7;
+  $t0 <- *{-20};
+  putchar $t0;
+}
+
+function affiche_1 {
+1 params
+3 locals
+  $t0 <- 41;
+  *{-8} <- $t0;
+  $t0 <- *{-8};
+  *{-16} <- $t0;
+  $s5 <- $a1;
+  $s6 <- $a2;
+  $s7 <- $a3;
+  $t1 <- *{-16};
+  $a1 <- $t1;
+  call affiche_2;
+  pop 0;
+  $a1 <- $s5;
+  $a2 <- $s6;
+  $a3 <- $s7;
+  $t0 <- $a1;
+  *{-12} <- $t0;
+  $t0 <- *{-12};
+  putchar $t0;
+}
+
+function affiche_2 {
+1 params
+1 locals
+  $t0 <- $a1;
+  *{-8} <- $t0;
+  $t0 <- *{-8};
+  putchar $t0;
+}
+

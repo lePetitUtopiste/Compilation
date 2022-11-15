@@ -1,0 +1,49 @@
+function main(arg) {
+  var #1;
+  var #0;
+  var a;
+  var b;
+
+  Cst(#1 <- 42); {13}
+  Write(*a <- #1); {14}
+  Cst(#0 <- 43); {11}
+  Write(*b <- #0); {12}
+  Move($s5 <- $a1); {8}
+  Move($s6 <- $a2); {9}
+  Move($s7 <- $a3); {10}
+  Move($a1 <- a); {2}
+  call affiche_1 (1); {6}
+  pop 0; {7}
+  Move($a1 <- $s5); {3}
+  Move($a2 <- $s6); {4}
+  Move($a3 <- $s7); {5}
+  putchar b; {1}
+}
+
+function affiche_1(n) {
+  var #1;
+  var #0;
+  var a;
+
+  Cst(#1 <- 41); {26}
+  Write(*a <- #1); {27}
+  Move($s5 <- $a1); {23}
+  Move($s6 <- $a2); {24}
+  Move($s7 <- $a3); {25}
+  Move($a1 <- a); {17}
+  call affiche_2 (1); {21}
+  pop 0; {22}
+  Move($a1 <- $s5); {18}
+  Move($a2 <- $s6); {19}
+  Move($a3 <- $s7); {20}
+  Read(#0 <- *n); {15}
+  putchar #0; {16}
+}
+
+function affiche_2(n) {
+  var #0;
+
+  Read(#0 <- *n); {28}
+  putchar #0; {29}
+}
+

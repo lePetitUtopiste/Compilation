@@ -13,7 +13,7 @@ main:
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -20
+	addi $sp, $sp, -16
 	sw $s0, 0($sp)
 	subi $sp, $sp, 4
 	sw $s1, 0($sp)
@@ -30,47 +30,90 @@ main:
 	subi $sp, $sp, 4
 	sw $s7, 0($sp)
 	subi $sp, $sp, 4
-	li $t0, 4
+	li $t0, 42
 	sw $t0, -8($fp)
 	lw $t0, -8($fp)
-	sw $t0, -24($fp)
-	li $t0, 42
+	sw $t0, -16($fp)
+	li $t0, 43
 	sw $t0, -12($fp)
 	lw $t0, -12($fp)
 	sw $t0, -20($fp)
 	move $s5, $a1
 	move $s6, $a2
 	move $s7, $a3
-	lw $t1, -24($fp)
-	move $a2, $t1
-	lw $t1, -20($fp)
+	lw $t1, -16($fp)
 	move $a1, $t1
-	jal add
+	jal affiche_1
 	addi $sp, $sp, 0
 	move $a1, $s5
 	move $a2, $s6
 	move $a3, $s7
-	sw $v0, -24($fp)
-	lw $t0, -24($fp)
+	lw $t0, -20($fp)
 	move $a0, $t0
 	li $v0, 11
 	syscall
+	li $v0, 0
+__lab_3:
+	addi $sp, $sp, 4
+	lw $s7, 0($sp)
+	addi $sp, $sp, 4
+	lw $s6, 0($sp)
+	addi $sp, $sp, 4
+	lw $s5, 0($sp)
+	addi $sp, $sp, 4
+	lw $s4, 0($sp)
+	addi $sp, $sp, 4
+	lw $s3, 0($sp)
+	addi $sp, $sp, 4
+	lw $s2, 0($sp)
+	addi $sp, $sp, 4
+	lw $s1, 0($sp)
+	addi $sp, $sp, 4
+	lw $s0, 0($sp)
+	move $sp, $fp
+	lw $ra, -4($fp)
+	lw $fp, 0($fp)
+	jr $ra
+affiche_1:
+	sw $fp, 0($sp)
+	subi $sp, $sp, 4
+	sw $ra, 0($sp)
+	subi $sp, $sp, 4
+	addi $fp, $sp, 8
+	addi $sp, $sp, -12
+	sw $s0, 0($sp)
+	subi $sp, $sp, 4
+	sw $s1, 0($sp)
+	subi $sp, $sp, 4
+	sw $s2, 0($sp)
+	subi $sp, $sp, 4
+	sw $s3, 0($sp)
+	subi $sp, $sp, 4
+	sw $s4, 0($sp)
+	subi $sp, $sp, 4
+	sw $s5, 0($sp)
+	subi $sp, $sp, 4
+	sw $s6, 0($sp)
+	subi $sp, $sp, 4
+	sw $s7, 0($sp)
+	subi $sp, $sp, 4
+	li $t0, 41
+	sw $t0, -8($fp)
+	lw $t0, -8($fp)
+	sw $t0, -16($fp)
 	move $s5, $a1
 	move $s6, $a2
 	move $s7, $a3
-	li $t0, 1
-	sw $t0, -16($fp)
 	lw $t1, -16($fp)
-	move $a2, $t1
-	lw $t1, -20($fp)
 	move $a1, $t1
-	jal add
+	jal affiche_2
 	addi $sp, $sp, 0
 	move $a1, $s5
 	move $a2, $s6
 	move $a3, $s7
-	sw $v0, -24($fp)
-	lw $t0, -24($fp)
+	move $t0, $a1
+	sw $t0, -12($fp)
+	lw $t0, -12($fp)
 	move $a0, $t0
 	li $v0, 11
 	syscall
@@ -96,13 +139,13 @@ __lab_2:
 	lw $ra, -4($fp)
 	lw $fp, 0($fp)
 	jr $ra
-add:
+affiche_2:
 	sw $fp, 0($sp)
 	subi $sp, $sp, 4
 	sw $ra, 0($sp)
 	subi $sp, $sp, 4
 	addi $fp, $sp, 8
-	addi $sp, $sp, -12
+	addi $sp, $sp, -4
 	sw $s0, 0($sp)
 	subi $sp, $sp, 4
 	sw $s1, 0($sp)
@@ -120,17 +163,11 @@ add:
 	sw $s7, 0($sp)
 	subi $sp, $sp, 4
 	move $t0, $a1
-	sw $t0, -16($fp)
-	move $t0, $a2
-	sw $t0, -12($fp)
-	lw $t0, -16($fp)
-	lw $t1, -12($fp)
-	add $t0, $t0, $t1
 	sw $t0, -8($fp)
-	lw $t1, -8($fp)
-	move $v0, $t1
-	move $sp, $fp
-	b __lab_1
+	lw $t0, -8($fp)
+	move $a0, $t0
+	li $v0, 11
+	syscall
 	li $v0, 0
 __lab_1:
 	addi $sp, $sp, 4

@@ -3,7 +3,7 @@
 	lw $a0, 0($a1)
 	jal atoi
 init_end:
-	move $a0, $v0
+	move $a1, $v0
 	jal main
 	li $v0, 10
 	syscall
@@ -30,6 +30,9 @@ main:
 	subi $sp, $sp, 4
 	sw $s7, 0($sp)
 	subi $sp, $sp, 4
+	move $s5, $a1
+	move $s6, $a2
+	move $s7, $a3
 	li $t0, 44
 	sw $t0, -8($fp)
 	lw $t1, -8($fp)
@@ -42,12 +45,11 @@ main:
 	sw $t0, -16($fp)
 	lw $t1, -16($fp)
 	move $a1, $t1
-	move $s7, $a0
-	move $s6, $a1
-	move $s5, $a2
-	move $s4, $a3
 	jal ordre
 	addi $sp, $sp, 0
+	move $a1, $s5
+	move $a2, $s6
+	move $a3, $s7
 	li $t0, 0
 	sw $t0, -20($fp)
 	lw $t1, -20($fp)

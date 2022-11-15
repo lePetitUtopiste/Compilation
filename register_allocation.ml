@@ -49,19 +49,15 @@ let liveness fdef =
        out
     | Call(_, n) ->
        (*les registres callee saved sont considéré comme écrit et ne sont donc plus vivant en sorti*)
-       let out1 = VSet.add "$a0" out in
-       let out1 = VSet.add "$a1" out1 in
-       let out1 = VSet.add "$a2" out1 in
-       let out1 = VSet.add "$a3" out1 in
-
-       let out1 = VSet.remove "$t2" out1 in
+       let out1 = VSet.remove "$t2" out in
        let out1 = VSet.remove "$t3" out1 in
        let out1 = VSet.remove "$t4" out1 in
        let out1 = VSet.remove "$t5" out1 in
        let out1 = VSet.remove "$t6" out1 in
        let out1 = VSet.remove "$t7" out1 in
        let out1 = VSet.remove "$t8" out1 in
-       VSet.remove "$t9" out1
+       let out1 = VSet.remove "$t9" out1 in
+       VSet.remove "$v0" out1
 
        (*on cosidère les paramètres lu on va donc considéré les registre *)
     | Return ->
@@ -131,7 +127,7 @@ let interference_graph fdef =
                  out
                  g
     | Putchar _ | Write _ | Return | Push _ | Pop _ ->
-       g (*certain que c'est faux TODO corriger ce truc*)
+       g
     | Call(_, _) ->
     let out = Hashtbl.find live_out n in
     VSet.fold (fun r g' -> if r <> "$v0" then
@@ -147,20 +143,22 @@ type color = int VMap.t
 
 
 (* Renvoie la plus petit couleur non utilisée par l'ensemble [v]. *)
-let choose_color v colors =
-  let val_max = VSet.fold (fun elt cpt_max -> if colors[elt] <= cpt_max then cpt_max else colors[elt]) v 0 in
+let choose_color (v) (colors:color) =
+  let val_max = VSet.fold (fun elt cpt_max -> if (VMap.find elt colors) <= cpt_max then cpt_max else (VMap.find elt colors)) v 0 in
   val_max + 1
 let color g k =
 
   let george x y g =
-    if String.get x 0 == '$' then
+    if String.get x 0 = '$' then
       false
     else
-      let voisins_x = VSet.filter (fun x -> (Graph.degree x g < k)) (Graph.neighbours x Conflict g) in
-      let voisins_y = Graph.neighbours y Conflict g in
-      let inter = VSet.inter voisins_x voisins_y in
-      false
-
+      if String.get y 0 = '$' then
+        let voisins_x = VMap.filter (fun x -> ((String.get x 0) = '$') || (Graph.degree x g >= k)) (Graph.neighbours x Conflict g) in
+        let voisins_y = Graph.neighbours y Conflict g in
+        let inter = VSet.inter voisins_x voisins_y in
+        false
+      else
+        false
   in
 
   (** Recherche d'un sommet à colorier.
@@ -172,17 +170,11 @@ let color g k =
       de faible degré.
    *)
   let rec simplify g =
-    (*let seq = VMap.to_seq g in
-    let rec find_min seq max =
-      match seq with
-      | (key,_)::suite  -> if (Graph.degree key g) < max then key else find_min suite max
-      | _ -> ""
-    in
-
-    let x = find_min seq 32 in
-    if x == "" then coalesce g else select x g
-    *)
-    failwith "not implemented"
+      try
+        let x,data = VMap.find_first (fun x -> ((Graph.degree x g )< k) && (not (Graph.has_pref x g))) g in
+        select x g
+      with
+      | _ -> coalesce g
 
 (** Recherche de deux sommets à fusionner.
   Parmi les sommets liés par des arêtes de préférence, on en cherche
@@ -193,7 +185,23 @@ let color g k =
 **)
 
   and coalesce g =
-    failwith "not implemented"
+    let map_george = VMap.filter (fun x data -> Graph.has_pref x g) g in
+    try
+      let rec find_couple bind g =
+        match bind with
+        | (x,_)::tl -> begin
+                       try
+                        let y,data = VMap.find_first (fun y -> george x y g) g in
+                        (x,y)
+                       with
+                       | _ -> find_couple tl g
+                       end
+        | _ -> failwith "Not_found"
+      in
+      let (x,y) = find_couple (VMap.bindings map_george) map_george in
+      simplify (Graph.merge x y g)
+    with
+    | _ -> freeze g
 
 (** Abandon d'arêtes de préférence.
     On cherche un sommet de degré < K. S'il existe un tel sommet [x],
@@ -201,7 +209,11 @@ let color g k =
     et on revient à [simplify]. Sinon, on passe à [spill].
  *)
   and freeze g =
-    failwith "not implemented"
+    try
+      let x,data = VMap.find_first (fun x -> (Graph.degree x g) < k) g in
+      simplify (remove_prefs x g)
+    with
+      | _ -> spill g
 
 (** Sacrifice d'un sommet.
     On se résigne à ne (peut-être) pas pouvoir donner à l'un des sommets
@@ -227,7 +239,12 @@ let color g k =
       registres.
  *)
   and spill g =
-    failwith "not implemented"
+    try
+      let x,data = VMap.find_first (fun x -> (String.get x 0) <> '$') g in
+      select x g
+
+    with
+    | _ -> VMap.empty
 
 
 (** Mettre de côté un sommet [x] et colorier récursivement le graphe [g']
@@ -235,12 +252,10 @@ let color g k =
      avec les couleurs sélectionnées pour ses voisins.
   *)
   and select x g =
-    (*
+
     let c = simplify (Graph.remove_vertex x g)  in
-    let voisin = Graph.neighbours x Conflict g in
+    let voisin = Graph.neighbours x (Conflict) g in
     VMap.add x (choose_color voisin c) c
-    *)
-    failwith "not implemented"
 
 
   in
@@ -276,6 +291,8 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
 
    let cpt = ref 0  in
 
+   (*renvoie l'index de elt dans la liste l en supposant que la première case a
+   l'id cpt*)
    let rec find_index elt l cpt =
       match l with
       | hd::tl -> Printf.printf "[find_index:%s] %i | %s\n" elt cpt hd;
@@ -288,7 +305,8 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
                       find_index elt tl (cpt+1)
       | _ -> failwith "Not_found"
    in
-   (*va chercher le nom dans la liste des param et des local et assigné un
+
+   (*cherche le nom dans la liste des parametres et des variables locales et assign un
    décalage respectivement de la forme 4*x -4*x *)
    let decide_placement nom  =
     if (String.get nom 0) == '$'then begin Actual(nom) end
@@ -301,6 +319,7 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
           else failwith "oups les variables globales apparaissent dans le graphe"
         end
    in
+   (*lance decide_placement for chaque element dans la liste des bindings du graphe*)
    let rec iterate_keys bind  =
     let result_map :register Graph.VMap.t = VMap.empty in
     match bind with
@@ -309,7 +328,9 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    in
    let map_alloc = iterate_keys (VMap.bindings graph) in
 
-   (*fonction utilisé pour rajouter des valeurs à l'allocation en cas de problèmes*)
+   (*fonction utilisées pour rajouter des valeurs à l'allocation en cas de problème*)
+
+   (*ajoute tous les paramètres d'une fonction à la liste des allocations*)
    let add_param l =
      let rec add_param_rec l cpt =
         match l with
@@ -329,7 +350,11 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
       VMap.add nom  (Actual(nom)) (add_register nom_registre (nbr_registre - 1) alloc)
    in
 
-   let map_alloc = add_param fdef.params in
+   let map_alloc = add_param fdef.params in (*nécessaire car les paramètres sont
+     crées par la fonction appelante et peuvent ne pas apparaître dans le graph
+     d'interférence si ils ne sont jamais lus*)
+
+
    (* let map_alloc = add_register "$a"  map_alloc in *)
    (* let map_alloc = add_register "$sp" (-2) map_alloc in *)
 

@@ -87,8 +87,8 @@ let tr_fdef fdef =
   @@ subi sp sp 4
 
   @@ tr_seq (fdef.code) (*on ajoute le code la fonction*)
-  (*code en cas d'abscence du return*)
-  @@ li "$v0" 0  (*on remet $v0 à 0*)
+
+  @@ li "$v0" 0  (*on remet $v0 à 0 si aucun return n'a été appelé*)
 
   @@label return_label
 

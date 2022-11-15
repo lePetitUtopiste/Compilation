@@ -1,0 +1,27 @@
+function main(arg)
+{
+	var a;
+	var b;
+	
+	a = 42;
+	b= 43;
+	
+	affiche_1(a);
+	putchar(b);
+
+}
+
+
+function affiche_1(n)
+{
+	var a;
+	a = 41;
+	
+	affiche_2(a);
+	putchar(n);
+}
+
+function affiche_2(n)
+{
+	putchar(n);
+}

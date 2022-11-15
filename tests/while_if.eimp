@@ -1,6 +1,9 @@
 function main {
 1 params
 4 locals
+  $s5 <- $a1;
+  $s6 <- $a2;
+  $s7 <- $a3;
   $t0 <- 44;
   *{-8} <- $t0;
   $t1 <- *{-8};
@@ -15,6 +18,9 @@ function main {
   $a1 <- $t1;
   call ordre;
   pop 0;
+  $a1 <- $s5;
+  $a2 <- $s6;
+  $a3 <- $s7;
   $t0 <- 0;
   *{-20} <- $t0;
   $t1 <- *{-20};

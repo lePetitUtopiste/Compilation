@@ -4,17 +4,23 @@ function main(arg) {
   var #1;
   var #0;
 
-  Cst(#3 <- 44); {20}
-  Move($a3 <- #3); {21}
-  Cst(#2 <- 43); {18}
-  Move($a2 <- #2); {19}
-  Cst(#1 <- 42); {16}
-  Move($a1 <- #1); {17}
-  call ordre (3); {22}
-  pop 0; {23}
-  Cst(#0 <- 0); {13}
-  Move($v0 <- #0); {14}
-  return; {15}
+  Move($s5 <- $a1); {15}
+  Move($s6 <- $a2); {16}
+  Move($s7 <- $a3); {17}
+  Cst(#3 <- 44); {8}
+  Move($a3 <- #3); {9}
+  Cst(#2 <- 43); {6}
+  Move($a2 <- #2); {7}
+  Cst(#1 <- 42); {4}
+  Move($a1 <- #1); {5}
+  call ordre (3); {13}
+  pop 0; {14}
+  Move($a1 <- $s5); {10}
+  Move($a2 <- $s6); {11}
+  Move($a3 <- $s7); {12}
+  Cst(#0 <- 0); {1}
+  Move($v0 <- #0); {2}
+  return; {3}
 }
 
 function ordre(a, b, c) {
@@ -23,14 +29,14 @@ function ordre(a, b, c) {
   var #1;
   var #0;
 
-  Read(#3 <- *a); {43}
-  putchar #3; {44}
-  Read(#2 <- *b); {41}
-  putchar #2; {42}
-  Read(#1 <- *c); {39}
-  putchar #1; {40}
-  Cst(#0 <- 0); {36}
-  Move($v0 <- #0); {37}
-  return; {38}
+  Read(#3 <- *a); {25}
+  putchar #3; {26}
+  Read(#2 <- *b); {23}
+  putchar #2; {24}
+  Read(#1 <- *c); {21}
+  putchar #1; {22}
+  Cst(#0 <- 0); {18}
+  Move($v0 <- #0); {19}
+  return; {20}
 }
 
