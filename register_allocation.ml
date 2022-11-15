@@ -314,7 +314,7 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
      let rec add_param_rec l cpt =
         match l with
         | hd :: lt -> Printf.printf "   %s\n" hd; if (cpt >= 3)
-                                                  then VMap.add hd (decide_placement hd ) (add_param_rec lt (cpt+1))
+                                                  then VMap.add hd (Stacked (4*(find_index hd fdef.params 1 ) - (3*4))) (add_param_rec lt (cpt+1))
                                                   else VMap.add hd (Actual("$a"^string_of_int (cpt+1))) (add_param_rec lt (cpt+1))
         | _ -> map_alloc
      in
@@ -330,7 +330,7 @@ let allocation (fdef: function_def): register Graph.VMap.t * int =
    in
 
    let map_alloc = add_param fdef.params in
-   (* let map_alloc = add_register "$a" 3 map_alloc in *)
+   (* let map_alloc = add_register "$a"  map_alloc in *)
    (* let map_alloc = add_register "$sp" (-2) map_alloc in *)
 
    Printf.printf "\nResultat allocation: \n\n";

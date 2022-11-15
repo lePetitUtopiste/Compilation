@@ -87,15 +87,23 @@ let tr_fdef fdef =
 
       let rec parcours_args args cpt =
         match args with
-        (*plein de NOP pour transformer le tout en séquence et pour conserver l'ordre des paramètres
-        normalement tous ces nop disparaitront ensuite*)
+        (*parcours la liste des paramètres, place les 3 premiers dans $a1-3 et le reste dans la pile*)
         |e::suite -> if (cpt >=3) then let r,s = tr_expr e in  (parcours_args suite (cpt + 1)) @@ (s @@ (Nop ++ Push(r)))
                                    else  let r,s = tr_expr e in  (parcours_args suite (cpt + 1)) @@ (s @@ (Nop ++ Move(("$a"^(string_of_int (cpt+1))),r)))
         | _ -> Nop
       in
       let s = parcours_args args 0 in
-      (*la restauration de ces variables est réalisé dans aimp2eimp*)
-      "$v0",   s ++ Call(f,List.length args) ++ Pop((List.length args)-3)
+      (*gestion des caller-saved*)
+      (* let s1 = Nop ++ Aimp.Push("$t2") ++ Aimp.Push("$t3") ++ Aimp.Push("$t4") ++ Aimp.Push("$t5") ++ Aimp.Push("$t6") ++ Aimp.Push("$t7") in
+      let s2 = Nop ++ Pop(1) ++ Read("$t7","$sp") ++ Pop(1) ++ Read("$t6","$sp") ++ Pop(1) ++ Read("$t5","$sp") ++ Pop(1) ++ Read("$t4","$sp")++ Pop(1)
+               ++ Read("$t3","$sp") ++ Pop(1) ++ Read("$t2","$sp") in *)
+
+      (*passage des paramètres a1-3 dans s5-7 pour assurer leur conservation au retour de l'appel*)
+      "$v0",  (Nop ++ Move("$s5","$a1") ++ Move("$s6","$a2") ++ Move("$s7","$a3"))
+              @@  ( s ++ Call(f,List.length args) ++ Pop( max ((List.length args)-3) 0  ))
+              @@ (Nop ++ Move("$a1","$s5") ++ Move("$a2","$s6") ++ Move("$a3","$s7"))
+              (*récupération des paramètres dans ces variables*)
+
   in
 
   let rec tr_instr = function
@@ -110,7 +118,7 @@ let tr_fdef fdef =
        s ++ If(r,tr_seq s1,tr_seq s2)
     | Mimp.While(e, s) ->
        let r_test, s_test = tr_expr e in
-       (*s_test ++*)Nop ++ While(s_test, r_test, tr_seq s)
+       Nop ++ While(s_test, r_test, tr_seq s)
 
     | Mimp.Return e ->
        (* Le résultat renvoyé doit être placé dans $v0. *)
@@ -126,10 +134,7 @@ let tr_fdef fdef =
   in
 
   let code =
-  let s1 = Nop ++ Aimp.Push("$a0") ++ Aimp.Push("$a1") ++ Aimp.Push("$a2") ++ Aimp.Push("$a3")  in
-  (* let s1 = s1 ++ Aimp.Push("$s5") ++ Aimp.Push("$s6") ++ Aimp.Push("$s7") in *)
-  let s2 = Nop ++ Pop(1) ++ Read("$a3","$sp") ++ Pop(1) ++ Read("$a2","$sp") ++ Pop(1) ++ Read("$a1","$sp") ++ Pop(1) ++ Read("$a0","$sp") in
-  (*s1 @@*) tr_seq Mimp.(fdef.code) (*@@ s2*)
+  tr_seq Mimp.(fdef.code)
   in
   {
     name = Mimp.(fdef.name);

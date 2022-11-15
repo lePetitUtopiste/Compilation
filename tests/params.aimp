@@ -1,0 +1,52 @@
+function main(arg) {
+  var #5;
+  var #4;
+  var #3;
+  var #2;
+  var #1;
+  var #0;
+
+  Move($s5 <- $a1); {18}
+  Move($s6 <- $a2); {19}
+  Move($s7 <- $a3); {20}
+  Cst(#5 <- 46); {11}
+  push #5; {12}
+  Cst(#4 <- 45); {9}
+  push #4; {10}
+  Cst(#3 <- 44); {7}
+  push #3; {8}
+  Cst(#2 <- 43); {5}
+  Move($a3 <- #2); {6}
+  Cst(#1 <- 42); {3}
+  Move($a2 <- #1); {4}
+  Cst(#0 <- 41); {1}
+  Move($a1 <- #0); {2}
+  call test (6); {16}
+  pop 3; {17}
+  Move($a1 <- $s5); {13}
+  Move($a2 <- $s6); {14}
+  Move($a3 <- $s7); {15}
+}
+
+function test(a, b, c, d, e, f) {
+  var #5;
+  var #4;
+  var #3;
+  var #2;
+  var #1;
+  var #0;
+
+  Read(#5 <- *a); {31}
+  putchar #5; {32}
+  Read(#4 <- *b); {29}
+  putchar #4; {30}
+  Read(#3 <- *c); {27}
+  putchar #3; {28}
+  Read(#2 <- *d); {25}
+  putchar #2; {26}
+  Read(#1 <- *e); {23}
+  putchar #1; {24}
+  Read(#0 <- *f); {21}
+  putchar #0; {22}
+}
+

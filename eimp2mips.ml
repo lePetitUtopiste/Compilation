@@ -25,12 +25,14 @@ let tr_fdef fdef =
     | Binop(rd, Add, r1, r2) -> add rd r1 r2
     | Binop(rd, Mul, r1, r2) -> mul rd r1 r2
     | Binop(rd, Lt, r1, r2)  -> slt rd r1 r2
-    | Call(f)            ->  move s7 a0
-                             (*sauvegarde des registre $a avant d'être utilisé pour les paramètres*)
+    | Call(f)            ->  (*sauvegarde des registre $a avant d'être utilisé pour les paramètres*)
                              (* @@ move s7 a1
                              @@ move s6 a2
                              @@ move s5 a3 *)
-                             @@jal f
+                             jal f
+                             (* @@ move a1 s5
+                             @@ move a2 s6
+                             @@ move a3 s7 *)
     | If(r, s1, s2) ->
        let then_label = new_label() in
        let end_label = new_label() in
@@ -121,7 +123,7 @@ let tr_prog prog =
     @@ lw a0 0 a1
     @@ jal "atoi"
     @@ label "init_end"
-    @@ move a0 v0
+    @@ move a1 v0
     (* @@ sw v0 0 sp
      * @@ subi sp sp 4 *)
     @@ jal "main"

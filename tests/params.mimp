@@ -1,0 +1,13 @@
+function main(arg) {
+  test(41, 42, 43, 44, 45, 46);
+}
+
+function test(a, b, c, d, e, f) {
+  putchar(a);
+  putchar(b);
+  putchar(c);
+  putchar(d);
+  putchar(e);
+  putchar(f);
+}
+

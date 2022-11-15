@@ -7,8 +7,8 @@ function main(arg) {
   i = 0;
   retour = 10;
   espace = 32;
-  while ((i < 16)) {
-    ligne(i, 15);
+  while ((i < (arg(+1)))) {
+    ligne(i, arg);
     putchar(retour);
     i = (i(+1));
   }
